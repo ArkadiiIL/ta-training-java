@@ -1,5 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
+import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,7 +13,7 @@ public class LoginPage extends BasePage {
     private WebElement passwordField;
     @FindBy(css = "input[data-test='login-button']")
     private WebElement loginButton;
-    private final static String URL = "https://www.saucedemo.com";
+    private final static String URL = ConfigReader.getBaseUrl();
 
     public LoginPage(WebDriver driver) {
         super(driver);
