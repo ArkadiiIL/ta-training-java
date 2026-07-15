@@ -1,5 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -26,6 +27,7 @@ public class CartPage extends BasePage {
         return getItemNames().containsAll(Arrays.asList(itemName));
     }
 
+    @Step("Proceed to checkout")
     public CheckoutPage goToCheckout() {
         wait.until(ExpectedConditions.elementToBeClickable(checkoutButton)).click();
         return new CheckoutPage(driver);
