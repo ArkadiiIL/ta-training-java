@@ -2,11 +2,26 @@ package com.epam.training.student_arkadii_ilinov.tests;
 
 import com.epam.training.student_arkadii_ilinov.driver.BrowserType;
 import com.epam.training.student_arkadii_ilinov.driver.DriverManager;
+import com.epam.training.student_arkadii_ilinov.pages.CartPage;
+import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
+import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.math.BigDecimal;
+import java.util.List;
 
-public class ChromeSmokeTest extends BaseTest{
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ChromeSmokeTest extends BaseTest {
+    private final static String USERNAME = "standard_user";
+    private final static String PASSWORD = "secret_sauce";
+    private final static String FIRST_ITEM_NAME = "Sauce Labs Backpack";
+    private final static String SECOND_ITEM_NAME = "Sauce Labs Fleece Jacket";
+    private final static String FIRST_NAME = "FirstName";
+    private final static String LAST_NAME = "LastName";
+    private final static String ZIP = "123-123";
+    private final static String COMPLETE_MESSAGE = "Thank you for your order!";
     @Override
     protected BrowserType getBrowserType() {
         return BrowserType.CHROME;
@@ -14,6 +29,20 @@ public class ChromeSmokeTest extends BaseTest{
 
     @Test
     public void testChromeSmoke() {
-        assertNotNull(DriverManager.getDriver());
+        CartPage cartPage = new LoginPage(DriverManager.getDriver())
+                .open()
+                .login(USERNAME, PASSWORD)
+                .addItemsToCart(FIRST_ITEM_NAME, SECOND_ITEM_NAME)
+                .goToCart();
+        assertTrue(cartPage.areItemsPresent(FIRST_ITEM_NAME, SECOND_ITEM_NAME ));
+        CheckoutOverviewPage checkoutOverviewPage = cartPage
+                .goToCheckout()
+                .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                .continueCheckout();
+        List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
+        BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        assertEquals(0, totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()));
+        String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
+        assertEquals(COMPLETE_MESSAGE, completeMessage);
     }
 }

@@ -1,0 +1,32 @@
+package com.epam.training.student_arkadii_ilinov.pages;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+public class LoginPage extends BasePage {
+    @FindBy(css = "input[data-test='username']")
+    private WebElement usernameField;
+    @FindBy(css = "input[data-test='password']")
+    private WebElement passwordField;
+    @FindBy(css = "input[data-test='login-button']")
+    private WebElement loginButton;
+    private final static String URL = "https://www.saucedemo.com";
+
+    public LoginPage(WebDriver driver) {
+        super(driver);
+    }
+
+    public LoginPage open() {
+        driver.navigate().to(URL);
+        return this;
+    }
+
+    public InventoryPage login(String username, String password) {
+        wait.until(ExpectedConditions.elementToBeClickable(usernameField)).sendKeys(username);
+        wait.until(ExpectedConditions.elementToBeClickable(passwordField)).sendKeys(password);
+        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+        return new InventoryPage(driver);
+    }
+}
