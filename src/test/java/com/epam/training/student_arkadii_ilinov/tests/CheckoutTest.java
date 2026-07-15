@@ -1,10 +1,10 @@
 package com.epam.training.student_arkadii_ilinov.tests;
 
-import com.epam.training.student_arkadii_ilinov.driver.BrowserType;
 import com.epam.training.student_arkadii_ilinov.driver.DriverManager;
 import com.epam.training.student_arkadii_ilinov.pages.CartPage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
 import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ChromeSmokeTest extends BaseTest {
+public abstract class CheckoutTest extends BaseTest {
     private final static String USERNAME = "standard_user";
     private final static String PASSWORD = "secret_sauce";
     private final static String FIRST_ITEM_NAME = "Sauce Labs Backpack";
@@ -22,13 +22,27 @@ public class ChromeSmokeTest extends BaseTest {
     private final static String LAST_NAME = "LastName";
     private final static String ZIP = "123-123";
     private final static String COMPLETE_MESSAGE = "Thank you for your order!";
-    @Override
-    protected BrowserType getBrowserType() {
-        return BrowserType.CHROME;
+
+    @Test
+    @DisplayName("UC-1: Checkout with a single item")
+    public void checkoutSingleItemTest() {
+        CartPage cartPage = new LoginPage(DriverManager.getDriver())
+                .open()
+                .login(USERNAME, PASSWORD)
+                .addItemToCart(FIRST_ITEM_NAME)
+                .goToCart();
+        assertTrue(cartPage.isItemPresent(FIRST_ITEM_NAME));
+        CheckoutOverviewPage checkoutOverviewPage = cartPage
+                .goToCheckout()
+                .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                .continueCheckout();
+        String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
+        assertEquals(COMPLETE_MESSAGE, completeMessage);
     }
 
     @Test
-    public void testChromeSmoke() {
+    @DisplayName("UC-2: Checkout with multiple items")
+    public void checkoutMultipleItemsTest() {
         CartPage cartPage = new LoginPage(DriverManager.getDriver())
                 .open()
                 .login(USERNAME, PASSWORD)
