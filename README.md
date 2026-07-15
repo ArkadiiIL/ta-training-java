@@ -77,4 +77,18 @@ mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
 
 ## How to View the Report
 
-_(To be added)_
+Test results are written to `target/allure-results` during the run. To generate and open the HTML report:
+
+```bash
+mvn allure:serve
+```
+
+The report opens in a browser automatically. For a persistent report instead of a temporary one:
+
+```bash
+mvn allure:report
+```
+
+It will be generated to `target/site/allure-maven-plugin/index.html`.
+
+The report includes step-by-step execution details for each test and a screenshot attached to any failed test.

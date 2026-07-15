@@ -26,7 +26,7 @@ public class LoginPage extends BasePage {
         return this;
     }
 
-    @Step("Login as {username} with password {password}")
+    @Step("Login as {username} with password *********")
     public InventoryPage login(String username, String password) {
         wait.until(ExpectedConditions.elementToBeClickable(usernameField)).sendKeys(username);
         wait.until(ExpectedConditions.elementToBeClickable(passwordField)).sendKeys(password);
