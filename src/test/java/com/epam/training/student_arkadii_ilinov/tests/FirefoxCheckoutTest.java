@@ -6,15 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class FirefoxSmokeTest extends BaseTest {
-
+public class FirefoxCheckoutTest extends CheckoutTest {
     @Override
     protected BrowserType getBrowserType() {
         return BrowserType.FIREFOX;
-    }
-
-    @Test
-    public void testFirefoxSmoke() {
-        assertNotNull(DriverManager.getDriver());
     }
 }

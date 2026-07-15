@@ -60,7 +60,18 @@ _(To be added)_
 
 ## How to Run
 
-_(To be added)_
+Run the full test suite (UC-1 and UC-2, Chrome and Firefox in parallel):
+
+```bash
+mvn test
+```
+
+Run a single scenario (still executes on both browsers in parallel):
+
+```bash
+mvn test -Dtest=*CheckoutTest#checkoutSingleItemTest    # UC-1 only
+mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
+```
 
 ---
 
