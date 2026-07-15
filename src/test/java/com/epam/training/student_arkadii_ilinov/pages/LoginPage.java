@@ -1,6 +1,7 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
 import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -19,11 +20,13 @@ public class LoginPage extends BasePage {
         super(driver);
     }
 
+    @Step("Open the login page")
     public LoginPage open() {
         driver.navigate().to(URL);
         return this;
     }
 
+    @Step("Login as {username} with password *********")
     public InventoryPage login(String username, String password) {
         wait.until(ExpectedConditions.elementToBeClickable(usernameField)).sendKeys(username);
         wait.until(ExpectedConditions.elementToBeClickable(passwordField)).sendKeys(password);

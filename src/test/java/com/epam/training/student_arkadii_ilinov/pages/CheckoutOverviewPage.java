@@ -1,5 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -20,11 +21,13 @@ public class CheckoutOverviewPage extends BasePage {
         super(driver);
     }
 
+    @Step("Finish checkout")
     public CheckoutCompletePage finishCheckout() {
         wait.until(ExpectedConditions.elementToBeClickable(finishButton)).click();
         return new CheckoutCompletePage(driver);
     }
 
+    @Step("Add items to cart")
     public List<BigDecimal> getItemsPrices() {
         return wait.until(ExpectedConditions.visibilityOfAllElements(priceItems))
                 .stream()
