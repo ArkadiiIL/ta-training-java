@@ -17,7 +17,10 @@ public class DriverManager {
     }
 
     public static void quitDriver() {
-        driver.get().quit();
+        WebDriver webDriver = driver.get();
+        if (webDriver != null) {
+            webDriver.quit();
+        }
         driver.remove();
     }
 }

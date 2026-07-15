@@ -27,7 +27,6 @@ public class CheckoutOverviewPage extends BasePage {
         return new CheckoutCompletePage(driver);
     }
 
-    @Step("Add items to cart")
     public List<BigDecimal> getItemsPrices() {
         return wait.until(ExpectedConditions.visibilityOfAllElements(priceItems))
                 .stream()
