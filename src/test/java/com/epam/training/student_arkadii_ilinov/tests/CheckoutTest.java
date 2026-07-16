@@ -31,7 +31,8 @@ public abstract class CheckoutTest extends BaseTest {
                 .login(USERNAME, PASSWORD)
                 .addItemToCart(FIRST_ITEM_NAME)
                 .goToCart();
-        assertTrue(cartPage.isItemPresent(FIRST_ITEM_NAME));
+        assertTrue(cartPage.isItemPresent(FIRST_ITEM_NAME),
+                "Item should be present in the cart: " + FIRST_ITEM_NAME);
         CheckoutOverviewPage checkoutOverviewPage = cartPage
                 .goToCheckout()
                 .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
@@ -48,14 +49,16 @@ public abstract class CheckoutTest extends BaseTest {
                 .login(USERNAME, PASSWORD)
                 .addItemsToCart(FIRST_ITEM_NAME, SECOND_ITEM_NAME)
                 .goToCart();
-        assertTrue(cartPage.areItemsPresent(FIRST_ITEM_NAME, SECOND_ITEM_NAME ));
+        assertTrue(cartPage.areItemsPresent(FIRST_ITEM_NAME, SECOND_ITEM_NAME),
+                "Items should be present in the cart: " + FIRST_ITEM_NAME + " and " + SECOND_ITEM_NAME);
         CheckoutOverviewPage checkoutOverviewPage = cartPage
                 .goToCheckout()
                 .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
                 .continueCheckout();
         List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
         BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-        assertEquals(0, totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()));
+        assertEquals(0, totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()),
+                "Item total should equal the sum of individual item prices");
         String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
         assertEquals(COMPLETE_MESSAGE, completeMessage);
     }

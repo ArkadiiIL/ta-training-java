@@ -23,8 +23,8 @@ public class CartPage extends BasePage {
         return getItemNames().contains(itemName);
     }
 
-    public boolean areItemsPresent(String... itemName) {
-        return getItemNames().containsAll(Arrays.asList(itemName));
+    public boolean areItemsPresent(String... itemNames) {
+        return getItemNames().containsAll(Arrays.asList(itemNames));
     }
 
     @Step("Proceed to checkout")

@@ -21,7 +21,6 @@ public class DriverFactory {
         return switch (browserType) {
             case CHROME -> createChromeDriver();
             case FIREFOX -> createFirefoxDriver();
-            default -> throw new IllegalArgumentException("Unsupported browser: " + browserType);
         };
     }
 
