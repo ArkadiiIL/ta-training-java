@@ -45,16 +45,28 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 ## Tech Stack
 
 - Java 21
-- Selenium WebDriver
-- JUnit 5
+- Selenium WebDriver 4.45
+- JUnit 5 — parallel execution at class level
 - Maven
-- Allure Reports
+- Allure Reports — steps and screenshots on failure
+- SLF4J + Logback
 
 ---
 
 ## Project Structure
 
-_(To be added)_
+    src/test/java/com/epam/training/student_arkadii_ilinov/
+    ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
+    ├── pages/        — Page Objects, one per application page, fluent navigation
+    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2), per-browser subclasses
+    ├── extensions/   — ScreenshotOnFailureExtension
+    └── utils/        — ConfigReader
+
+    src/test/resources/
+    ├── config.properties          — base URL
+    ├── junit-platform.properties  — parallel execution settings
+    ├── allure.properties          — results directory
+    └── logback.xml                — logging config
 
 ---
 
