@@ -5,13 +5,17 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigReader {
+    private static final String CONFIG_FILE = "config.properties";
     private static final Properties PROPERTIES = new Properties();
 
     static {
-        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
+            if (input == null) {
+                throw new IllegalStateException(CONFIG_FILE + " not found on the classpath");
+            }
             PROPERTIES.load(input);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load config.properties", e);
+            throw new IllegalStateException("Failed to load " + CONFIG_FILE, e);
         }
     }
 
