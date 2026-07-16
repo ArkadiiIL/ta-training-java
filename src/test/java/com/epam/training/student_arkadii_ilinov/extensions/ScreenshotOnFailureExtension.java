@@ -7,13 +7,16 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 
 public class ScreenshotOnFailureExtension implements AfterTestExecutionCallback {
+    private static final Logger log = LoggerFactory.getLogger(ScreenshotOnFailureExtension.class);
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
-        // Проверяем, завершился ли тест с ошибкой
         boolean testFailed = context.getExecutionException().isPresent();
 
         if (testFailed) {
@@ -27,9 +30,9 @@ public class ScreenshotOnFailureExtension implements AfterTestExecutionCallback 
                             new ByteArrayInputStream(screenshot),
                             "png"
                     );
-                }
+                } else log.warn("Cannot take screenshot: driver is null");
             } catch (Exception e) {
-                System.err.println("Failed to take screenshot: " + e.getMessage());
+                log.error("Failed to take screenshot", e);
             }
         }
     }
