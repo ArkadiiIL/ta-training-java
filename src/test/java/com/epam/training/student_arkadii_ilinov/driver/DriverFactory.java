@@ -5,15 +5,19 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class DriverFactory {
+    private static final Logger log = LoggerFactory.getLogger(DriverFactory.class);
     private DriverFactory() {
     }
 
     public static WebDriver createDriver(BrowserType browserType) {
+        log.info("Creating driver for browser type {}", browserType);
         return switch (browserType) {
             case CHROME -> createChromeDriver();
             case FIREFOX -> createFirefoxDriver();
