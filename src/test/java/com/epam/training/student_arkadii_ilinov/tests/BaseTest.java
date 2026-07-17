@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 @ExtendWith(ScreenshotOnFailureExtension.class)
 public abstract class BaseTest {
-    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
+    private final static Logger log = LoggerFactory.getLogger(BaseTest.class);
     protected abstract BrowserType getBrowserType();
 
     @BeforeEach

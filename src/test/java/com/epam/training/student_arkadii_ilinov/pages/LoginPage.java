@@ -2,18 +2,13 @@ package com.epam.training.student_arkadii_ilinov.pages;
 
 import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends BasePage {
-    @FindBy(css = "input[data-test='username']")
-    private WebElement usernameField;
-    @FindBy(css = "input[data-test='password']")
-    private WebElement passwordField;
-    @FindBy(css = "input[data-test='login-button']")
-    private WebElement loginButton;
+    private final static By USERNAME_FIELD = By.cssSelector("input[data-test='username']");
+    private final static By PASSWORD_FIELD = By.cssSelector("input[data-test='password']");
+    private final static By LOGIN_BUTTON = By.cssSelector("input[data-test='login-button']");
     private final static String URL = ConfigReader.getBaseUrl();
 
     public LoginPage(WebDriver driver) {
@@ -28,9 +23,9 @@ public class LoginPage extends BasePage {
 
     @Step("Login as {username} with password *********")
     public InventoryPage login(String username, String password) {
-        wait.until(ExpectedConditions.elementToBeClickable(usernameField)).sendKeys(username);
-        wait.until(ExpectedConditions.elementToBeClickable(passwordField)).sendKeys(password);
-        wait.until(ExpectedConditions.elementToBeClickable(loginButton)).click();
+        clickable(USERNAME_FIELD).sendKeys(username);
+        clickable(PASSWORD_FIELD).sendKeys(password);
+        clickable(LOGIN_BUTTON).click();
         return new InventoryPage(driver);
     }
 }

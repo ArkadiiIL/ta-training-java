@@ -3,18 +3,14 @@ package com.epam.training.student_arkadii_ilinov.pages;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class InventoryPage extends BasePage {
     private final static String ADD_BUTTON_XPATH = """
-        //div[text()='%s']
-        /ancestor::div[@data-test='inventory-item']
-        //button[starts-with(@data-test, 'add-to-cart')]
-        """;
-    @FindBy(css = "a[data-test='shopping-cart-link']")
-    private WebElement cartLink;
+            //div[@data-test='inventory-item-name' and text()='%s']\
+            /ancestor::div[@data-test='inventory-item']\
+            //button[starts-with(@data-test, 'add-to-cart')]""";
+
+    private final static By CART_LINK = By.cssSelector("a[data-test='shopping-cart-link']");
 
     public InventoryPage(WebDriver driver) {
         super(driver);
@@ -22,10 +18,12 @@ public class InventoryPage extends BasePage {
 
     @Step("Add item {itemName} to cart")
     public InventoryPage addItemToCart(String itemName) {
-        String addButtonXpath = String.format(ADD_BUTTON_XPATH, itemName);
-        By addButtonLocator = By.xpath(addButtonXpath);
-        wait.until(ExpectedConditions.elementToBeClickable(addButtonLocator)).click();
+        clickable(addButtonLocator(itemName)).click();
         return this;
+    }
+
+    private By addButtonLocator(String itemName) {
+        return By.xpath(String.format(ADD_BUTTON_XPATH, itemName));
     }
 
     @Step("Add items to cart")
@@ -38,7 +36,7 @@ public class InventoryPage extends BasePage {
 
     @Step("Go to cart")
     public CartPage goToCart() {
-        wait.until(ExpectedConditions.elementToBeClickable(cartLink)).click();
+        clickable(CART_LINK).click();
         return new CartPage(driver);
     }
 }
