@@ -1,21 +1,16 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class CheckoutOverviewPage extends BasePage {
-    @FindBy(css = "button[data-test='finish']")
-    private WebElement finishButton;
-    @FindBy(css = "div[data-test='inventory-item-price']")
-    private List<WebElement> priceItems;
-    @FindBy(css = "div[data-test='subtotal-label']")
-    private WebElement itemTotalPrice;
+    private final static By FINISH_BUTTON = By.cssSelector("button[data-test='finish']");
+    private final static By PRICE_ITEMS = By.cssSelector("div[data-test='inventory-item-price']");
+    private final static By ITEM_TOTAL_PRICE = By.cssSelector("div[data-test='subtotal-label']");
 
     public CheckoutOverviewPage(WebDriver driver) {
         super(driver);
@@ -23,12 +18,12 @@ public class CheckoutOverviewPage extends BasePage {
 
     @Step("Finish checkout")
     public CheckoutCompletePage finishCheckout() {
-        wait.until(ExpectedConditions.elementToBeClickable(finishButton)).click();
+        clickable(FINISH_BUTTON).click();
         return new CheckoutCompletePage(driver);
     }
 
     public List<BigDecimal> getItemsPrices() {
-        return wait.until(ExpectedConditions.visibilityOfAllElements(priceItems))
+        return allVisible(PRICE_ITEMS)
                 .stream()
                 .map(webElement -> webElement.getText().replace("$", "").strip())
                 .map(BigDecimal::new)
@@ -37,7 +32,7 @@ public class CheckoutOverviewPage extends BasePage {
 
     public BigDecimal getItemTotalPrice() {
         String itemTotalPriceText =
-                wait.until(ExpectedConditions.visibilityOf(itemTotalPrice))
+                visible(ITEM_TOTAL_PRICE)
                         .getText().replace("Item total: $", "").strip();
         return new BigDecimal(itemTotalPriceText);
     }

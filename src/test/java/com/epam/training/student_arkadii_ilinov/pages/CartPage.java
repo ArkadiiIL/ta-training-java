@@ -1,19 +1,16 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class CartPage extends BasePage {
-    @FindBy(css = "div[data-test='inventory-item-name']")
-    private List<WebElement> cartItems;
-    @FindBy(css = "button[data-test='checkout']")
-    private WebElement checkoutButton;
+    private final static By CART_ITEMS = By.cssSelector("div[data-test='inventory-item-name']");
+    private final static By CHECKOUT_BUTTON = By.cssSelector("button[data-test='checkout']");
 
     public CartPage(WebDriver driver) {
         super(driver);
@@ -29,12 +26,12 @@ public class CartPage extends BasePage {
 
     @Step("Proceed to checkout")
     public CheckoutPage goToCheckout() {
-        wait.until(ExpectedConditions.elementToBeClickable(checkoutButton)).click();
+        clickable(CHECKOUT_BUTTON).click();
         return new CheckoutPage(driver);
     }
 
     private List<String> getItemNames() {
-       return wait.until(ExpectedConditions.visibilityOfAllElements(cartItems))
-               .stream().map(WebElement::getText).map(String::strip).toList();
+        return allVisible(CART_ITEMS)
+                .stream().map(WebElement::getText).map(String::strip).toList();
     }
 }
