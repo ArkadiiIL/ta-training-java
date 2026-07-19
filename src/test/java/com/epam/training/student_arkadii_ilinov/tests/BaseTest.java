@@ -4,6 +4,7 @@ import com.epam.training.student_arkadii_ilinov.driver.BrowserType;
 import com.epam.training.student_arkadii_ilinov.driver.DriverFactory;
 import com.epam.training.student_arkadii_ilinov.driver.DriverManager;
 import com.epam.training.student_arkadii_ilinov.extensions.ScreenshotOnFailureExtension;
+import io.qameta.allure.Allure;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ public abstract class BaseTest {
     @BeforeEach
     public void setUp() {
         log.info("Starting test with browser: {}", getBrowserType());
+        Allure.parameter("browser", getBrowserType());
         WebDriver webDriver = DriverFactory.createDriver(getBrowserType());
         DriverManager.setDriver(webDriver);
     }
