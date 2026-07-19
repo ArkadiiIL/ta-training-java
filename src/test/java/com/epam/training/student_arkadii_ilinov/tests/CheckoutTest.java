@@ -6,6 +6,8 @@ import com.epam.training.student_arkadii_ilinov.pages.CheckoutCompletePage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
 import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -17,6 +19,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Epic("SauceDemo E2E")
+@Feature("Checkout")
 public abstract class CheckoutTest extends BaseTest {
     private final static String USERNAME = "standard_user";
     private final static String PASSWORD = "secret_sauce";
@@ -29,6 +33,7 @@ public abstract class CheckoutTest extends BaseTest {
     @ValueSource(strings = {"Sauce Labs Backpack", "Sauce Labs Onesie"})
     @DisplayName("UC-1: Checkout with a single item")
     public void checkoutSingleItemTest(String itemName) {
+        Allure.story("Checkout with a single item");
         CartPage cartPage = Allure.step("Given the cart contains " + itemName,
                 () -> {
                     CartPage cart = new LoginPage(DriverManager.getDriver())
@@ -56,6 +61,7 @@ public abstract class CheckoutTest extends BaseTest {
     @CsvSource({"Sauce Labs Backpack, Sauce Labs Onesie",
             "Sauce Labs Bike Light, Test.allTheThings() T-Shirt (Red)"})
     public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
+        Allure.story("Checkout with multiple items");
         CartPage cartPage = Allure.step(
                 "Given the cart contains " + firstItemName + " and " + secondItemName,
                 () -> {
