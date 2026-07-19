@@ -26,7 +26,7 @@ public class InventoryPage extends BasePage {
         return By.xpath(String.format(ADD_BUTTON_XPATH, itemName));
     }
 
-    @Step("Add items to cart")
+    @Step("Add items to cart: {itemNames}")
     public InventoryPage addItemsToCart(String... itemNames) {
         for (String itemName : itemNames) {
             addItemToCart(itemName);

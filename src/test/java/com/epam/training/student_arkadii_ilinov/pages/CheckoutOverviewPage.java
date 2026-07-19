@@ -1,5 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -22,18 +23,24 @@ public class CheckoutOverviewPage extends BasePage {
         return new CheckoutCompletePage(driver);
     }
 
+    @Step("Get individual item prices")
     public List<BigDecimal> getItemsPrices() {
-        return allVisible(PRICE_ITEMS)
+        List<BigDecimal> prices = allVisible(PRICE_ITEMS)
                 .stream()
                 .map(webElement -> webElement.getText().replace("$", "").strip())
                 .map(BigDecimal::new)
                 .toList();
+        Allure.parameter("prices", prices);
+        return prices;
     }
 
+    @Step("Get item total")
     public BigDecimal getItemTotalPrice() {
         String itemTotalPriceText =
                 visible(ITEM_TOTAL_PRICE)
                         .getText().replace("Item total: $", "").strip();
-        return new BigDecimal(itemTotalPriceText);
+        BigDecimal total = new BigDecimal(itemTotalPriceText);
+        Allure.parameter("total", total);
+        return total;
     }
 }
