@@ -16,10 +16,12 @@ public class CartPage extends BasePage {
         super(driver);
     }
 
+    @Step("Check that the cart contains {itemName}")
     public boolean isItemPresent(String itemName) {
         return getItemNames().contains(itemName);
     }
 
+    @Step("Check that the cart contains all of {itemNames}")
     public boolean areItemsPresent(String... itemNames) {
         return getItemNames().containsAll(Arrays.asList(itemNames));
     }

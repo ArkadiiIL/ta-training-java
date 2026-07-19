@@ -1,5 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -10,6 +11,7 @@ public class CheckoutCompletePage extends BasePage {
         super(driver);
     }
 
+    @Step("Get the order confirmation message")
     public String getCompleteMessage() {
         return visible(SUCCESS_MESSAGE).getText().strip();
     }

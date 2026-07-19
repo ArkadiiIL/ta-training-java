@@ -23,7 +23,7 @@ public class LoginPage extends BasePage {
         return this;
     }
 
-    @Step("Login as {username} with password *********")
+    @Step("Login as {username}")
     public InventoryPage login(String username, @Param(mode = Parameter.Mode.MASKED)String password) {
         clickable(USERNAME_FIELD).sendKeys(username);
         clickable(PASSWORD_FIELD).sendKeys(password);
