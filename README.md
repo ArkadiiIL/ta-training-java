@@ -48,8 +48,20 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 - Selenium WebDriver 4.45
 - JUnit 5 — parallel execution at class level
 - Maven
-- Allure Reports — steps and screenshots on failure
+- Allure Reports — steps, parameters, and screenshots on failure
 - SLF4J + Logback
+
+Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the product name.
+
+---
+
+## Prerequisites
+
+- JDK 21
+- Maven 3.9+
+- Chrome and Firefox installed locally
+
+Drivers are resolved automatically by Selenium Manager, so there's nothing else to set up.
 
 ---
 
@@ -70,6 +82,21 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 
 ---
 
+## Design Patterns
+
+- **Page Object Model** — each page is a class, so tests read in terms of actions rather than selectors.
+- **Factory** — `DriverFactory` builds a configured `WebDriver` for the requested `BrowserType`.
+- **Fluent Interface** — page methods return the next page, so a scenario reads as a chain of steps.
+- **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel Chrome/Firefox run safe.
+
+---
+
+## Logging
+
+SLF4J with Logback. The driver lifecycle and each test's start and finish are logged, with the thread name in the pattern so the two parallel browsers don't tangle in the output.
+
+---
+
 ## How to Run
 
 Run the full test suite (UC-1 and UC-2, Chrome and Firefox in parallel):
@@ -82,6 +109,8 @@ Run a single scenario (still executes on both browsers in parallel):
 
 ```bash
 mvn test -Dtest=*CheckoutTest#checkoutSingleItemTest    # UC-1 only
+```
+```bash
 mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
 ```
 
@@ -103,4 +132,4 @@ mvn allure:report
 
 It will be generated to `target/site/allure-maven-plugin/index.html`.
 
-The report includes step-by-step execution details for each test and a screenshot attached to any failed test.
+Each test is structured as Given / When / Then steps, and the Behaviors tab groups the scenarios as an Epic → Feature → Story tree. Every test carries its browser and, for UC-2, the item prices as parameters; failed tests have a screenshot attached.
