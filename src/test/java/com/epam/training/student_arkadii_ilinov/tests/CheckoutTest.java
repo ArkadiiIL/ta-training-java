@@ -8,20 +8,19 @@ import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import io.qameta.allure.Story;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @Epic("SauceDemo E2E")
 @Feature("Checkout")
-public abstract class CheckoutTest extends BaseTest {
+public class CheckoutTest extends BaseTest {
     private final static String USERNAME = "standard_user";
     private final static String PASSWORD = "secret_sauce";
     private final static String FIRST_NAME = "FirstName";
@@ -29,11 +28,28 @@ public abstract class CheckoutTest extends BaseTest {
     private final static String ZIP = "123-123";
     private final static String COMPLETE_MESSAGE = "Thank you for your order!";
 
-    @ParameterizedTest(name = "— {0}")
-    @ValueSource(strings = {"Sauce Labs Backpack", "Sauce Labs Onesie"})
-    @DisplayName("UC-1: Checkout with a single item")
+    @DataProvider(name = "singleItems")
+    public Object[][] singleItems() {
+        return new Object[][]{
+                {"Sauce Labs Backpack"},
+                {"Sauce Labs Onesie"}
+        };
+    }
+
+    @DataProvider(name = "itemPairs")
+    public Object[][] itemPairs() {
+        return new Object[][]{
+                {"Sauce Labs Backpack", "Sauce Labs Onesie"},
+                {"Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"}
+        };
+    }
+
+    @Test(
+            description = "UC-1: Checkout with a single item",
+            dataProvider = "singleItems")
+    @Story("Checkout with a single item")
     public void checkoutSingleItemTest(String itemName) {
-        Allure.story("Checkout with a single item");
+        Allure.parameter("browser", DriverManager.getBrowser());
         CartPage cartPage = Allure.step("Given the cart contains " + itemName,
                 () -> {
                     CartPage cart = new LoginPage(DriverManager.getDriver())
@@ -53,15 +69,16 @@ public abstract class CheckoutTest extends BaseTest {
                         .finishCheckout());
 
         Allure.step("Then the order is confirmed", () ->
-                assertEquals(COMPLETE_MESSAGE, completePage.getCompleteMessage()));
+                assertEquals(completePage.getCompleteMessage(), COMPLETE_MESSAGE));
     }
 
-    @DisplayName("UC-2: Checkout with multiple items")
-    @ParameterizedTest(name = "— {0} and {1}")
-    @CsvSource({"Sauce Labs Backpack, Sauce Labs Onesie",
-            "Sauce Labs Bike Light, Test.allTheThings() T-Shirt (Red)"})
+    @Test(
+            description = "UC-2: Checkout with multiple items",
+            dataProvider = "itemPairs"
+    )
+    @Story("Checkout with multiple items")
     public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
-        Allure.story("Checkout with multiple items");
+        Allure.parameter("browser", DriverManager.getBrowser());
         CartPage cartPage = Allure.step(
                 "Given the cart contains " + firstItemName + " and " + secondItemName,
                 () -> {
@@ -85,14 +102,14 @@ public abstract class CheckoutTest extends BaseTest {
                 () -> {
                     List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
                     BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-                    assertEquals(0, totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()),
+                    assertEquals(totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()), 0,
                             "Item total should equal the sum of individual item prices");
                 });
 
         Allure.step("And the order is confirmed",
                 () -> {
                     String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
-                    assertEquals(COMPLETE_MESSAGE, completeMessage);
+                    assertEquals(completeMessage, COMPLETE_MESSAGE);
                 });
     }
 }

@@ -4,7 +4,6 @@ import com.epam.training.student_arkadii_ilinov.driver.BrowserType;
 import com.epam.training.student_arkadii_ilinov.driver.DriverFactory;
 import com.epam.training.student_arkadii_ilinov.driver.DriverManager;
 import com.epam.training.student_arkadii_ilinov.extensions.ScreenshotOnFailureExtension;
-import io.qameta.allure.Allure;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +21,9 @@ public abstract class BaseTest {
     public void setUp(String browser) {
         BrowserType browserType = BrowserType.valueOf(browser);
         log.info("Starting test with browser: {}", browserType);
-        Allure.parameter("browser", browserType);
         WebDriver webDriver = DriverFactory.createDriver(browserType);
         DriverManager.setDriver(webDriver);
+        DriverManager.setBrowser(browserType);
     }
 
     @AfterMethod

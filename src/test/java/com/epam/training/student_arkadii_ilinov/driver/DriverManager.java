@@ -4,6 +4,7 @@ import org.openqa.selenium.WebDriver;
 
 public class DriverManager {
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static final ThreadLocal<BrowserType> browser = new ThreadLocal<>();
 
     private DriverManager() {
     }
@@ -23,4 +24,6 @@ public class DriverManager {
         }
         driver.remove();
     }
+    public static void setBrowser(BrowserType b) { browser.set(b); }
+    public static BrowserType getBrowser() { return browser.get(); }
 }
