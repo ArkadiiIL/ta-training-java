@@ -16,5 +16,3 @@ public class CheckoutCompletePage extends BasePage {
         return visible(SUCCESS_MESSAGE).getText().strip();
     }
 }
-
-
