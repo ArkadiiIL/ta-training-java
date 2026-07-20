@@ -30,7 +30,9 @@ public class ScreenshotOnFailureExtension implements AfterTestExecutionCallback 
                             new ByteArrayInputStream(screenshot),
                             "png"
                     );
-                } else log.warn("Cannot take screenshot: driver is null");
+                } else {
+                    log.warn("Cannot take screenshot: driver is null");
+                }
             } catch (Exception e) {
                 log.error("Failed to take screenshot", e);
             }
