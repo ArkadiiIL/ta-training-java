@@ -1,6 +1,6 @@
 # SauceDemo Checkout Automation
 
-Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with Selenium WebDriver, JUnit 5, and the Page Object Model pattern.
+Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with Selenium WebDriver, TestNG, and the Page Object Model pattern.
 
 ---
 
@@ -46,7 +46,7 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 
 - Java 21
 - Selenium WebDriver 4.45
-- JUnit 5 — parallel execution at class level
+- TestNG — parallel execution at suite level (testng.xml)
 - Maven
 - Allure Reports — steps, parameters, and screenshots on failure
 - SLF4J + Logback
@@ -70,15 +70,23 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     src/test/java/com/epam/training/student_arkadii_ilinov/
     ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/        — Page Objects, one per application page, fluent navigation
-    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2), per-browser subclasses
-    ├── extensions/   — ScreenshotOnFailureExtension
+    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
+    ├── listeners/    — ScreenshotOnFailureListener (screenshot on failure)
     └── utils/        — ConfigReader
 
     src/test/resources/
-    ├── config.properties          — base URL
-    ├── junit-platform.properties  — parallel execution settings
-    ├── allure.properties          — results directory
-    └── logback.xml                — logging config
+    ├── config.properties  — base URL and credentials
+    ├── testng.xml         — browsers and parallel execution settings
+    ├── allure.properties  — results directory
+    └── logback.xml        — logging config
+
+---
+
+## Test Suite
+
+Browsers and parallelism live in `src/test/resources/testng.xml`, not in
+the test code. Each `<test>` block runs one browser via a `browser`
+parameter, and the blocks run in parallel (`parallel="tests"`).
 
 ---
 
@@ -105,14 +113,7 @@ Run the full test suite (UC-1 and UC-2, Chrome and Firefox in parallel):
 mvn test
 ```
 
-Run a single scenario (still executes on both browsers in parallel):
-
-```bash
-mvn test -Dtest=*CheckoutTest#checkoutSingleItemTest    # UC-1 only
-```
-```bash
-mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
-```
+The suite file drives the run, so both browsers execute in parallel by default.
 
 ---
 

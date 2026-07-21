@@ -1,4 +1,4 @@
-package com.epam.training.student_arkadii_ilinov.extensions;
+package com.epam.training.student_arkadii_ilinov.listeners;
 
 import com.epam.training.student_arkadii_ilinov.driver.DriverManager;
 import io.qameta.allure.Allure;
@@ -12,8 +12,8 @@ import org.testng.ITestResult;
 
 import java.io.ByteArrayInputStream;
 
-public class ScreenshotOnFailureExtension implements ITestListener {
-    private static final Logger log = LoggerFactory.getLogger(ScreenshotOnFailureExtension.class);
+public class ScreenshotOnFailureListener implements ITestListener {
+    private static final Logger log = LoggerFactory.getLogger(ScreenshotOnFailureListener.class);
 
     @Override
     public void onTestFailure(ITestResult result) {
