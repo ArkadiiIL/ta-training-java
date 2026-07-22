@@ -46,7 +46,7 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 
 - Java 21
 - Selenium WebDriver 4.45
-- JUnit 5 — parallel execution at class level
+- JUnit 5 — parameterized cross-browser execution & parallel test execution
 - Maven
 - Allure Reports — steps, parameters, and screenshots on failure
 - SLF4J + Logback
@@ -70,12 +70,12 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     src/test/java/com/epam/training/student_arkadii_ilinov/
     ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/        — Page Objects, one per application page, fluent navigation
-    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2), per-browser subclasses
+    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
     ├── extensions/   — ScreenshotOnFailureExtension
     └── utils/        — ConfigReader
 
     src/test/resources/
-    ├── config.properties          — base URL
+    ├── config.properties          — base URL, test credentials, supported browsers list
     ├── junit-platform.properties  — parallel execution settings
     ├── allure.properties          — results directory
     └── logback.xml                — logging config
@@ -88,6 +88,7 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
 - **Factory** — `DriverFactory` builds a configured `WebDriver` for the requested `BrowserType`.
 - **Fluent Interface** — page methods return the next page, so a scenario reads as a chain of steps.
 - **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel Chrome/Firefox run safe.
+- **Data-Driven Matrix (Stream/flatMap)** — dynamically combines available browsers with test datasets to generate cross-browser test cases automatically.
 
 ---
 
@@ -107,11 +108,13 @@ mvn test
 
 Run a single scenario (still executes on both browsers in parallel):
 
+#UC-1 only
 ```bash
-mvn test -Dtest=*CheckoutTest#checkoutSingleItemTest    # UC-1 only
+mvn test -Dtest=CheckoutTest#checkoutSingleItemTest*
 ```
+#UC-2 only
 ```bash
-mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
+mvn test -Dtest=CheckoutTest#checkoutMultipleItemsTest*
 ```
 
 ---

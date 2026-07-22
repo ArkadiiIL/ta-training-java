@@ -11,18 +11,21 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Epic("SauceDemo E2E")
 @Feature("Checkout")
-public abstract class CheckoutTest extends BaseTest {
+public class CheckoutTest extends BaseTest {
     private final static String USERNAME = ConfigReader.getUsername();
     private final static String PASSWORD = ConfigReader.getPassword();
     private final static String FIRST_NAME = "FirstName";
@@ -30,10 +33,27 @@ public abstract class CheckoutTest extends BaseTest {
     private final static String ZIP = "123-123";
     private final static String COMPLETE_MESSAGE = "Thank you for your order!";
 
-    @ParameterizedTest(name = "— {0}")
-    @ValueSource(strings = {"Sauce Labs Backpack", "Sauce Labs Onesie"})
+    static Stream<Arguments> singleItemCases() {
+        List<String> items = List.of("Sauce Labs Backpack", "Sauce Labs Onesie");
+        return ConfigReader.getBrowsers().stream()
+                .flatMap(browser -> items.stream().map(item -> Arguments.of(browser, item)));
+    }
+
+    static Stream<Arguments> multipleItemCases() {
+        List<String[]> pairs = List.of(
+                new String[]{"Sauce Labs Backpack", "Sauce Labs Onesie"},
+                new String[]{"Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"}
+        );
+        return ConfigReader.getBrowsers().stream()
+                .flatMap(browser -> pairs.stream()
+                        .map(p -> Arguments.of(browser, p[0], p[1])));
+    }
+
     @DisplayName("UC-1: Checkout with a single item")
-    public void checkoutSingleItemTest(String itemName) {
+    @ParameterizedTest(name = "[{0}] — {1}")
+    @MethodSource("singleItemCases")
+    public void checkoutSingleItemTest(String browser, String itemName) {
+        initDriver(browser);
         Allure.story("Checkout with a single item");
         CartPage cartPage = Allure.step("Given the cart contains " + itemName,
                 () -> {
@@ -58,10 +78,10 @@ public abstract class CheckoutTest extends BaseTest {
     }
 
     @DisplayName("UC-2: Checkout with multiple items")
-    @ParameterizedTest(name = "— {0} and {1}")
-    @CsvSource({"Sauce Labs Backpack, Sauce Labs Onesie",
-            "Sauce Labs Bike Light, Test.allTheThings() T-Shirt (Red)"})
-    public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
+    @ParameterizedTest(name = "[{0}] — {1} and {2}")
+    @MethodSource("multipleItemCases")
+    public void checkoutMultipleItemsTest(String browser, String firstItemName, String secondItemName) {
+        initDriver(browser);
         Allure.story("Checkout with multiple items");
         CartPage cartPage = Allure.step(
                 "Given the cart contains " + firstItemName + " and " + secondItemName,

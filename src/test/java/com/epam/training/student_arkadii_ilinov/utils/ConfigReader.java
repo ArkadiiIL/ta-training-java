@@ -2,6 +2,8 @@ package com.epam.training.student_arkadii_ilinov.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class ConfigReader {
@@ -32,5 +34,13 @@ public class ConfigReader {
 
     public static String getPassword() {
         return PROPERTIES.getProperty("password");
+    }
+
+    public static List<String> getBrowsers() {
+        String browserProperty = PROPERTIES.getProperty("browser", "chrome");
+        return Arrays.stream(browserProperty.split(","))
+                .map(String::trim)
+                .toList();
+
     }
 }
