@@ -5,6 +5,7 @@ import com.epam.training.student_arkadii_ilinov.pages.CartPage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutCompletePage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
 import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
+import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -22,8 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("SauceDemo E2E")
 @Feature("Checkout")
 public abstract class CheckoutTest extends BaseTest {
-    private final static String USERNAME = "standard_user";
-    private final static String PASSWORD = "secret_sauce";
+    private final static String USERNAME = ConfigReader.getUsername();
+    private final static String PASSWORD = ConfigReader.getPassword();
     private final static String FIRST_NAME = "FirstName";
     private final static String LAST_NAME = "LastName";
     private final static String ZIP = "123-123";

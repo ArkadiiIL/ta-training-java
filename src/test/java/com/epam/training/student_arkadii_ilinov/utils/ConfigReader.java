@@ -25,4 +25,12 @@ public class ConfigReader {
     public static String getBaseUrl() {
         return PROPERTIES.getProperty("base.url");
     }
+
+    public static String getUsername() {
+        return PROPERTIES.getProperty("username");
+    }
+
+    public static String getPassword() {
+        return PROPERTIES.getProperty("password");
+    }
 }
