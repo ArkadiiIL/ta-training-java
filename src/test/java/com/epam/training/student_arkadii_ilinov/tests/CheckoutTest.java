@@ -5,6 +5,7 @@ import com.epam.training.student_arkadii_ilinov.pages.CartPage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutCompletePage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
 import com.epam.training.student_arkadii_ilinov.pages.LoginPage;
+import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -21,8 +22,8 @@ import static org.testng.Assert.assertTrue;
 @Epic("SauceDemo E2E")
 @Feature("Checkout")
 public class CheckoutTest extends BaseTest {
-    private final static String USERNAME = "standard_user";
-    private final static String PASSWORD = "secret_sauce";
+    private final static String USERNAME = ConfigReader.getUsername();
+    private final static String PASSWORD = ConfigReader.getPassword();
     private final static String FIRST_NAME = "FirstName";
     private final static String LAST_NAME = "LastName";
     private final static String ZIP = "123-123";
@@ -49,27 +50,29 @@ public class CheckoutTest extends BaseTest {
             dataProvider = "singleItems")
     @Story("Checkout with a single item")
     public void checkoutSingleItemTest(String itemName) {
-        Allure.parameter("browser", DriverManager.getBrowser());
-        CartPage cartPage = Allure.step("Given the cart contains " + itemName,
-                () -> {
-                    CartPage cart = new LoginPage(DriverManager.getDriver())
-                            .open()
-                            .login(USERNAME, PASSWORD)
-                            .addItemToCart(itemName)
-                            .goToCart();
-                    assertTrue(cart.isItemPresent(itemName),
-                            "Item should be present in the cart: " + itemName);
-                    return cart;
-                });
+        withScreenshotOnFailure(() -> {
+            Allure.parameter("browser", DriverManager.getBrowser());
+            CartPage cartPage = Allure.step("Given the cart contains " + itemName,
+                    () -> {
+                        CartPage cart = new LoginPage(DriverManager.getDriver())
+                                .open()
+                                .login(USERNAME, PASSWORD)
+                                .addItemToCart(itemName)
+                                .goToCart();
+                        assertTrue(cart.isItemPresent(itemName),
+                                "Item should be present in the cart: " + itemName);
+                        return cart;
+                    });
 
-        CheckoutCompletePage completePage = Allure.step("When the order is placed", () ->
-                cartPage.goToCheckout()
-                        .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
-                        .continueCheckout()
-                        .finishCheckout());
+            CheckoutCompletePage completePage = Allure.step("When the order is placed", () ->
+                    cartPage.goToCheckout()
+                            .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                            .continueCheckout()
+                            .finishCheckout());
 
-        Allure.step("Then the order is confirmed", () ->
-                assertEquals(completePage.getCompleteMessage(), COMPLETE_MESSAGE));
+            Allure.step("Then the order is confirmed", () ->
+                    assertEquals(completePage.getCompleteMessage(), COMPLETE_MESSAGE));
+        });
     }
 
     @Test(
@@ -78,38 +81,40 @@ public class CheckoutTest extends BaseTest {
     )
     @Story("Checkout with multiple items")
     public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
-        Allure.parameter("browser", DriverManager.getBrowser());
-        CartPage cartPage = Allure.step(
-                "Given the cart contains " + firstItemName + " and " + secondItemName,
-                () -> {
-                    CartPage cart = new LoginPage(DriverManager.getDriver())
-                            .open()
-                            .login(USERNAME, PASSWORD)
-                            .addItemsToCart(firstItemName, secondItemName)
-                            .goToCart();
-                    assertTrue(cart.areItemsPresent(firstItemName, secondItemName),
-                            "Items should be present in the cart: " + firstItemName + " and " + secondItemName);
-                    return cart;
-                });
+        withScreenshotOnFailure(() -> {
+            Allure.parameter("browser", DriverManager.getBrowser());
+            CartPage cartPage = Allure.step(
+                    "Given the cart contains " + firstItemName + " and " + secondItemName,
+                    () -> {
+                        CartPage cart = new LoginPage(DriverManager.getDriver())
+                                .open()
+                                .login(USERNAME, PASSWORD)
+                                .addItemsToCart(firstItemName, secondItemName)
+                                .goToCart();
+                        assertTrue(cart.areItemsPresent(firstItemName, secondItemName),
+                                "Items should be present in the cart: " + firstItemName + " and " + secondItemName);
+                        return cart;
+                    });
 
-        CheckoutOverviewPage checkoutOverviewPage = Allure.step("When the user proceeds to checkout",
-                () -> cartPage
-                        .goToCheckout()
-                        .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
-                        .continueCheckout());
+            CheckoutOverviewPage checkoutOverviewPage = Allure.step("When the user proceeds to checkout",
+                    () -> cartPage
+                            .goToCheckout()
+                            .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                            .continueCheckout());
 
-        Allure.step("Then the item total equals the sum of item prices",
-                () -> {
-                    List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
-                    BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-                    assertEquals(totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()), 0,
-                            "Item total should equal the sum of individual item prices");
-                });
+            Allure.step("Then the item total equals the sum of item prices",
+                    () -> {
+                        List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
+                        BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+                        assertEquals(totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()), 0,
+                                "Item total should equal the sum of individual item prices");
+                    });
 
-        Allure.step("And the order is confirmed",
-                () -> {
-                    String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
-                    assertEquals(completeMessage, COMPLETE_MESSAGE);
-                });
+            Allure.step("And the order is confirmed",
+                    () -> {
+                        String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
+                        assertEquals(completeMessage, COMPLETE_MESSAGE);
+                    });
+        });
     }
 }

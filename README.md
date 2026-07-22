@@ -71,7 +71,6 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/        — Page Objects, one per application page, fluent navigation
     ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
-    ├── listeners/    — ScreenshotOnFailureListener (screenshot on failure)
     └── utils/        — ConfigReader
 
     src/test/resources/
