@@ -11,12 +11,21 @@ import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 @ExtendWith(ScreenshotOnFailureExtension.class)
 public abstract class BaseTest {
     private final static Logger log = LoggerFactory.getLogger(BaseTest.class);
 
     protected void initDriver(String browser) {
-        BrowserType browserType = BrowserType.valueOf(browser.toUpperCase());
+        BrowserType browserType;
+        try {
+            browserType = BrowserType.valueOf(browser.trim().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "Unknown browser '" + browser + "' in config.properties; supported: "
+                            + Arrays.toString(BrowserType.values()), e);
+        }
         log.info("Starting test with browser: {}", browserType);
         Allure.parameter("browser", browserType);
         WebDriver webDriver = DriverFactory.createDriver(browserType);

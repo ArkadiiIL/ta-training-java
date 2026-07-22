@@ -35,8 +35,9 @@ public class CheckoutTest extends BaseTest {
 
     static Stream<Arguments> singleItemCases() {
         List<String> items = List.of("Sauce Labs Backpack", "Sauce Labs Onesie");
-        return ConfigReader.getBrowsers().stream()
-                .flatMap(browser -> items.stream().map(item -> Arguments.of(browser, item)));
+        return items.stream()
+                .flatMap(item -> ConfigReader.getBrowsers().stream()
+                        .map(browser -> Arguments.of(browser, item)));
     }
 
     static Stream<Arguments> multipleItemCases() {
@@ -44,9 +45,9 @@ public class CheckoutTest extends BaseTest {
                 new String[]{"Sauce Labs Backpack", "Sauce Labs Onesie"},
                 new String[]{"Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"}
         );
-        return ConfigReader.getBrowsers().stream()
-                .flatMap(browser -> pairs.stream()
-                        .map(p -> Arguments.of(browser, p[0], p[1])));
+        return pairs.stream()
+                .flatMap(pair -> ConfigReader.getBrowsers().stream()
+                        .map(browser -> Arguments.of(browser, pair[0], pair[1])));
     }
 
     @DisplayName("UC-1: Checkout with a single item")
