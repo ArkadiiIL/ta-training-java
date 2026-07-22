@@ -1,6 +1,7 @@
 # SauceDemo Checkout Automation
 
-Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with Selenium WebDriver, JUnit 5, and the Page Object Model pattern.
+Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with
+Selenium WebDriver, JUnit 5, and the Page Object Model pattern.
 
 ---
 
@@ -8,8 +9,7 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 
 ### End-to-end flow
 
-**Focus:** User completes full flow from login to checkout
-**Launch URL:** https://www.saucedemo.com/
+**Focus:** User completes full flow from login to checkout **Launch URL:** https://www.saucedemo.com/
 
 ### UC-1 Checkout Flow (one item)
 
@@ -46,12 +46,13 @@ Automated test framework for the end-to-end checkout flow on [SauceDemo](https:/
 
 - Java 21
 - Selenium WebDriver 4.45
-- JUnit 5 — parallel execution at class level
+- JUnit 5 — parameterized cross-browser execution & parallel test execution
 - Maven
 - Allure Reports — steps, parameters, and screenshots on failure
 - SLF4J + Logback
 
-Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the product name.
+Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the
+product name.
 
 ---
 
@@ -70,12 +71,12 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     src/test/java/com/epam/training/student_arkadii_ilinov/
     ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/        — Page Objects, one per application page, fluent navigation
-    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2), per-browser subclasses
+    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
     ├── extensions/   — ScreenshotOnFailureExtension
     └── utils/        — ConfigReader
 
     src/test/resources/
-    ├── config.properties          — base URL
+    ├── config.properties          — base URL, test credentials, supported browsers list
     ├── junit-platform.properties  — parallel execution settings
     ├── allure.properties          — results directory
     └── logback.xml                — logging config
@@ -87,38 +88,56 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
 - **Page Object Model** — each page is a class, so tests read in terms of actions rather than selectors.
 - **Factory** — `DriverFactory` builds a configured `WebDriver` for the requested `BrowserType`.
 - **Fluent Interface** — page methods return the next page, so a scenario reads as a chain of steps.
-- **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel Chrome/Firefox run safe.
+- **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel
+  Chrome/Firefox run safe.
+- **Data-Driven Matrix (Stream/flatMap)** — dynamically combines available browsers with test datasets to generate
+  cross-browser test cases automatically.
 
 ---
 
 ## Logging
 
-SLF4J with Logback. The driver lifecycle and each test's start and finish are logged, with the thread name in the pattern so the two parallel browsers don't tangle in the output.
+SLF4J with Logback. The driver lifecycle and each test's start and finish are logged, with the thread name in the
+pattern so the parallel tests don't tangle in the output.
 
 ---
 
 ## How to Run
 
-Run the full test suite (UC-1 and UC-2, Chrome and Firefox in parallel):
+Run the full test suite (UC-1 and UC-2, across both browsers, tests running in parallel):
 
 ```bash
 mvn test
 ```
 
-Run a single scenario (still executes on both browsers in parallel):
+Run a single scenario (still executes across both browsers in parallel):
 
 ```bash
-mvn test -Dtest=*CheckoutTest#checkoutSingleItemTest    # UC-1 only
+# UC-1 only
+mvn test -Dtest=CheckoutTest#checkoutSingleItemTest*
 ```
+
 ```bash
-mvn test -Dtest=*CheckoutTest#checkoutMultipleItemsTest # UC-2 only
+# UC-2 only
+mvn test -Dtest=CheckoutTest#checkoutMultipleItemsTest*
 ```
+
+The set of browsers is read from `config.properties`. Edit the `browser` list to change which browsers run, or to run
+just one:
+
+    browser=chrome,firefox   # both, in parallel
+    browser=chrome           # Chrome only
+    browser=firefox          # Firefox only
+
+Tests run in parallel with a fixed pool of two threads, so two tests execute at once across the configured browser
+matrix.
 
 ---
 
 ## How to View the Report
 
-Test results are written to `target/allure-results` during the run. To generate and open the HTML report:
+Test results are written to `target/allure-results` during the run, so run `mvn test` first. To generate and open the
+HTML report:
 
 ```bash
 mvn allure:serve
@@ -132,4 +151,6 @@ mvn allure:report
 
 It will be generated to `target/site/allure-maven-plugin/index.html`.
 
-Each test is structured as Given / When / Then steps, and the Behaviors tab groups the scenarios as an Epic → Feature → Story tree. Every test carries its browser and, for UC-2, the item prices as parameters; failed tests have a screenshot attached.
+Each test is structured as Given / When / Then steps, and the Behaviors tab groups the scenarios as an Epic → Feature →
+Story tree. Every test carries its browser and, for UC-2, the item prices as parameters; failed tests have a screenshot
+attached.
