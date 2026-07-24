@@ -2,8 +2,6 @@ package com.epam.training.student_arkadii_ilinov.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 
 public class ConfigReader {
@@ -36,11 +34,15 @@ public class ConfigReader {
         return PROPERTIES.getProperty("password");
     }
 
-    public static List<String> getBrowsers() {
-        String browserProperty = PROPERTIES.getProperty("browser", "chrome");
-        return Arrays.stream(browserProperty.split(","))
-                .map(String::trim)
-                .toList();
+    public static String getWindowWidth() {
+        return PROPERTIES.getProperty("window.width", "1920");
+    }
 
+    public static String getWindowHeight() {
+        return PROPERTIES.getProperty("window.height", "1080");
+    }
+
+    public static int getTimeoutWaitDuration() {
+        return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds"));
     }
 }
