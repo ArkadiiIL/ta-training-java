@@ -9,17 +9,15 @@ import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import io.qameta.allure.Story;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @Epic("SauceDemo E2E")
 @Feature("Checkout")
@@ -31,88 +29,88 @@ public class CheckoutTest extends BaseTest {
     private final static String ZIP = "123-123";
     private final static String COMPLETE_MESSAGE = "Thank you for your order!";
 
-    static Stream<Arguments> singleItemCases() {
-        List<String> items = List.of("Sauce Labs Backpack", "Sauce Labs Onesie");
-        return items.stream()
-                .flatMap(item -> ConfigReader.getBrowsers().stream()
-                        .map(browser -> Arguments.of(browser, item)));
+    @DataProvider(name = "singleItems")
+    public Object[][] singleItems() {
+        return new Object[][]{
+                {"Sauce Labs Backpack"},
+                {"Sauce Labs Onesie"}
+        };
     }
 
-    static Stream<Arguments> multipleItemCases() {
-        List<String[]> pairs = List.of(
-                new String[]{"Sauce Labs Backpack", "Sauce Labs Onesie"},
-                new String[]{"Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"}
-        );
-        return pairs.stream()
-                .flatMap(pair -> ConfigReader.getBrowsers().stream()
-                        .map(browser -> Arguments.of(browser, pair[0], pair[1])));
+    @DataProvider(name = "itemPairs")
+    public Object[][] itemPairs() {
+        return new Object[][]{
+                {"Sauce Labs Backpack", "Sauce Labs Onesie"},
+                {"Sauce Labs Bike Light", "Test.allTheThings() T-Shirt (Red)"}
+        };
     }
 
-    @DisplayName("UC-1: Checkout with a single item")
-    @ParameterizedTest(name = "[{0}] — {1}")
-    @MethodSource("singleItemCases")
-    public void checkoutSingleItemTest(String browser, String itemName) {
-        initDriver(browser);
-        Allure.story("Checkout with a single item");
-        CartPage cartPage = Allure.step("Given the cart contains " + itemName,
-                () -> {
-                    CartPage cart = new LoginPage(DriverManager.getDriver())
-                            .open()
-                            .login(USERNAME, PASSWORD)
-                            .addItemToCart(itemName)
-                            .goToCart();
-                    assertTrue(cart.isItemPresent(itemName),
-                            "Item should be present in the cart: " + itemName);
-                    return cart;
-                });
+    @Test(
+            description = "UC-1: Checkout with a single item",
+            dataProvider = "singleItems")
+    @Story("Checkout with a single item")
+    public void checkoutSingleItemTest(String itemName) {
+            Allure.parameter("browser", DriverManager.getBrowser());
+            CartPage cartPage = Allure.step("Given the cart contains " + itemName,
+                    () -> {
+                        CartPage cart = new LoginPage(DriverManager.getDriver())
+                                .open()
+                                .login(USERNAME, PASSWORD)
+                                .addItemToCart(itemName)
+                                .goToCart();
+                        assertTrue(cart.isItemPresent(itemName),
+                                "Item should be present in the cart: " + itemName);
+                        return cart;
+                    });
 
-        CheckoutCompletePage completePage = Allure.step("When the order is placed", () ->
-                cartPage.goToCheckout()
-                        .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
-                        .continueCheckout()
-                        .finishCheckout());
+            CheckoutCompletePage completePage = Allure.step("When the order is placed", () ->
+                    cartPage.goToCheckout()
+                            .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                            .continueCheckout()
+                            .finishCheckout());
 
-        Allure.step("Then the order is confirmed", () ->
-                assertEquals(COMPLETE_MESSAGE, completePage.getCompleteMessage()));
+            Allure.step("Then the order is confirmed", () ->
+                    assertEquals(completePage.getCompleteMessage(), COMPLETE_MESSAGE));
     }
 
-    @DisplayName("UC-2: Checkout with multiple items")
-    @ParameterizedTest(name = "[{0}] — {1} and {2}")
-    @MethodSource("multipleItemCases")
-    public void checkoutMultipleItemsTest(String browser, String firstItemName, String secondItemName) {
-        initDriver(browser);
-        Allure.story("Checkout with multiple items");
-        CartPage cartPage = Allure.step(
-                "Given the cart contains " + firstItemName + " and " + secondItemName,
-                () -> {
-                    CartPage cart = new LoginPage(DriverManager.getDriver())
-                            .open()
-                            .login(USERNAME, PASSWORD)
-                            .addItemsToCart(firstItemName, secondItemName)
-                            .goToCart();
-                    assertTrue(cart.areItemsPresent(firstItemName, secondItemName),
-                            "Items should be present in the cart: " + firstItemName + " and " + secondItemName);
-                    return cart;
-                });
+    @Test(
+            description = "UC-2: Checkout with multiple items",
+            dataProvider = "itemPairs"
+    )
+    @Story("Checkout with multiple items")
+    public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
+            Allure.parameter("browser", DriverManager.getBrowser());
+            CartPage cartPage = Allure.step(
+                    "Given the cart contains " + firstItemName + " and " + secondItemName,
+                    () -> {
+                        CartPage cart = new LoginPage(DriverManager.getDriver())
+                                .open()
+                                .login(USERNAME, PASSWORD)
+                                .addItemsToCart(firstItemName, secondItemName)
+                                .goToCart();
+                        assertTrue(cart.areItemsPresent(firstItemName, secondItemName),
+                                "Items should be present in the cart: " + firstItemName + " and " + secondItemName);
+                        return cart;
+                    });
 
-        CheckoutOverviewPage checkoutOverviewPage = Allure.step("When the user proceeds to checkout",
-                () -> cartPage
-                        .goToCheckout()
-                        .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
-                        .continueCheckout());
+            CheckoutOverviewPage checkoutOverviewPage = Allure.step("When the user proceeds to checkout",
+                    () -> cartPage
+                            .goToCheckout()
+                            .checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP)
+                            .continueCheckout());
 
-        Allure.step("Then the item total equals the sum of item prices",
-                () -> {
-                    List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
-                    BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-                    assertEquals(0, totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()),
-                            "Item total should equal the sum of individual item prices");
-                });
+            Allure.step("Then the item total equals the sum of item prices",
+                    () -> {
+                        List<BigDecimal> prices = checkoutOverviewPage.getItemsPrices();
+                        BigDecimal totalPrice = prices.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+                        assertEquals(totalPrice.compareTo(checkoutOverviewPage.getItemTotalPrice()), 0,
+                                "Item total should equal the sum of individual item prices");
+                    });
 
-        Allure.step("And the order is confirmed",
-                () -> {
-                    String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
-                    assertEquals(COMPLETE_MESSAGE, completeMessage);
-                });
+            Allure.step("And the order is confirmed",
+                    () -> {
+                        String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
+                        assertEquals(completeMessage, COMPLETE_MESSAGE);
+                    });
     }
 }
