@@ -1,5 +1,7 @@
 package com.epam.training.student_arkadii_ilinov.driver;
 
+import com.epam.training.student_arkadii_ilinov.utils.ConfigReader;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,6 +15,8 @@ import java.util.Map;
 
 public class DriverFactory {
     private static final Logger log = LoggerFactory.getLogger(DriverFactory.class);
+    private static final String WINDOW_WIDTH = ConfigReader.getWindowWidth();
+    private static final String WINDOW_HEIGHT = ConfigReader.getWindowHeight();
     private DriverFactory() {
     }
 
@@ -30,12 +34,14 @@ public class DriverFactory {
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_leak_detection", false);
         options.setExperimentalOption("prefs", prefs);
+        options.addArguments("--window-size=" + WINDOW_WIDTH + "," + WINDOW_HEIGHT);
         return new ChromeDriver(options);
     }
 
     private static WebDriver createFirefoxDriver() {
         FirefoxOptions options = new FirefoxOptions();
         options.addPreference("signon.rememberSignons", false);
+        options.addArguments("--width=" + WINDOW_WIDTH, "--height=" + WINDOW_HEIGHT);
         return new FirefoxDriver(options);
     }
 }

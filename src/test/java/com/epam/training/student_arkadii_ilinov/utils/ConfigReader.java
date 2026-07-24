@@ -33,4 +33,11 @@ public class ConfigReader {
     public static String getPassword() {
         return PROPERTIES.getProperty("password");
     }
+
+    public static String getWindowWidth() {
+        return PROPERTIES.getProperty("window.width", "1920");
+    }
+    public static String getWindowHeight() {
+        return PROPERTIES.getProperty("window.height", "1080");
+    }
 }
