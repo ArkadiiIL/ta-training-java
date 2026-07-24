@@ -23,7 +23,6 @@ public class Hooks {
         BrowserType browserType = Objects.requireNonNull(
                 DriverManager.getBrowser(),
                 "Browser is not set — check @Parameters(\"browser\") in the runner and testng.xml");
-        Allure.parameter("browser", browserType);
         log.info("Starting test with browser: {}", browserType);
         DriverManager.setDriver(DriverFactory.createDriver(browserType));
     }

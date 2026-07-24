@@ -12,8 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <allure.version>2.35.1</allure.version>
-        <aspectj.version>1.9.25.1</aspectj.version>
+        <allure.version>2.35.4</allure.version>
         <cucumber.version>7.34.4</cucumber.version>
     </properties>
 
@@ -73,14 +72,6 @@
             <artifactId>allure-cucumber7-jvm</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!-- AspectJ -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>${aspectj.version}</version>
-            <scope>test</scope>
-        </dependency>
         <!-- LogBack -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -97,9 +88,6 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <version>3.5.4</version>
             <configuration>
-                <argLine>
-                    -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                </argLine>
                 <suiteXmlFiles>
                     <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                 </suiteXmlFiles>
