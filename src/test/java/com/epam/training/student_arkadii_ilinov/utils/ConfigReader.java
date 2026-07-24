@@ -37,7 +37,12 @@ public class ConfigReader {
     public static String getWindowWidth() {
         return PROPERTIES.getProperty("window.width", "1920");
     }
+
     public static String getWindowHeight() {
         return PROPERTIES.getProperty("window.height", "1080");
+    }
+
+    public static int getTimeoutWaitDuration() {
+        return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds"));
     }
 }
