@@ -19,19 +19,18 @@ import org.testng.annotations.Parameters;
 import java.io.ByteArrayInputStream;
 
 public abstract class BaseTest implements IHookable {
-    private final static Logger log = LoggerFactory.getLogger(BaseTest.class);
+    private static final Logger log = LoggerFactory.getLogger(BaseTest.class);
+    private static final String SCREENSHOT_NAME = "Screenshot on failure";
 
     @BeforeMethod
     @Parameters("browser")
     public void setUp(String browser) {
         BrowserType browserType = BrowserType.valueOf(browser);
-        log.info("Starting test with browser: {}", browserType);
-        WebDriver webDriver = DriverFactory.createDriver(browserType);
-        DriverManager.setDriver(webDriver);
+        DriverManager.setDriver(DriverFactory.createDriver(browserType));
         DriverManager.setBrowser(browserType);
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
         log.info("Closing driver");
         DriverManager.quitDriver();
@@ -39,17 +38,33 @@ public abstract class BaseTest implements IHookable {
 
     @Override
     public void run(IHookCallBack callBack, ITestResult testResult) {
+        String testName = testResult.getName();
+        log.info("Starting test: {}", testName);
+
         callBack.runTestMethod(testResult);
-        if (testResult.getThrowable() != null) {
-            WebDriver driver = DriverManager.getDriver();
-            if (driver != null) {
-                log.error("Test failed, capturing screenshot");
-                Allure.addAttachment("Screenshot on failure", "image/png",
-                        new ByteArrayInputStream(
-                                ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)), "png");
-            } else {
-                log.warn("Test failed but driver is null, no screenshot");
-            }
+
+        Throwable failure = testResult.getThrowable();
+        if (failure == null) {
+            log.info("Test passed: {}", testName);
+            return;
+        }
+
+        log.error("Test failed: {}", testName, failure);
+        attachScreenshot();
+    }
+
+    private void attachScreenshot() {
+        WebDriver driver = DriverManager.getDriver();
+        if (driver == null) {
+            log.warn("Driver is null, screenshot skipped");
+            return;
+        }
+        try {
+            byte[] screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+            Allure.addAttachment(SCREENSHOT_NAME, "image/png",
+                    new ByteArrayInputStream(screenshot), "png");
+        } catch (Exception e) {
+            log.warn("Failed to capture screenshot", e);
         }
     }
 }
