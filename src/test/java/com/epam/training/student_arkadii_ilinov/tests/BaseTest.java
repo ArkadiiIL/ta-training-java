@@ -9,13 +9,16 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.IHookCallBack;
+import org.testng.IHookable;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 
 import java.io.ByteArrayInputStream;
 
-public abstract class BaseTest {
+public abstract class BaseTest implements IHookable {
     private final static Logger log = LoggerFactory.getLogger(BaseTest.class);
 
     @BeforeMethod
@@ -34,20 +37,19 @@ public abstract class BaseTest {
         DriverManager.quitDriver();
     }
 
-    protected void withScreenshotOnFailure(Runnable scenario) {
-        try {
-            scenario.run();
-        } catch (Throwable t) {
+    @Override
+    public void run(IHookCallBack callBack, ITestResult testResult) {
+        callBack.runTestMethod(testResult);
+        if (testResult.getThrowable() != null) {
             WebDriver driver = DriverManager.getDriver();
             if (driver != null) {
-                log.error("Test failed, capturing screenshot", t);
+                log.error("Test failed, capturing screenshot");
                 Allure.addAttachment("Screenshot on failure", "image/png",
                         new ByteArrayInputStream(
                                 ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)), "png");
             } else {
                 log.warn("Test failed but driver is null, no screenshot");
             }
-            throw t;
         }
     }
 }

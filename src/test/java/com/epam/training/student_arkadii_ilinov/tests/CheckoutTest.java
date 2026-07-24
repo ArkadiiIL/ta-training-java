@@ -50,7 +50,6 @@ public class CheckoutTest extends BaseTest {
             dataProvider = "singleItems")
     @Story("Checkout with a single item")
     public void checkoutSingleItemTest(String itemName) {
-        withScreenshotOnFailure(() -> {
             Allure.parameter("browser", DriverManager.getBrowser());
             CartPage cartPage = Allure.step("Given the cart contains " + itemName,
                     () -> {
@@ -72,7 +71,6 @@ public class CheckoutTest extends BaseTest {
 
             Allure.step("Then the order is confirmed", () ->
                     assertEquals(completePage.getCompleteMessage(), COMPLETE_MESSAGE));
-        });
     }
 
     @Test(
@@ -81,7 +79,6 @@ public class CheckoutTest extends BaseTest {
     )
     @Story("Checkout with multiple items")
     public void checkoutMultipleItemsTest(String firstItemName, String secondItemName) {
-        withScreenshotOnFailure(() -> {
             Allure.parameter("browser", DriverManager.getBrowser());
             CartPage cartPage = Allure.step(
                     "Given the cart contains " + firstItemName + " and " + secondItemName,
@@ -115,6 +112,5 @@ public class CheckoutTest extends BaseTest {
                         String completeMessage = checkoutOverviewPage.finishCheckout().getCompleteMessage();
                         assertEquals(completeMessage, COMPLETE_MESSAGE);
                     });
-        });
     }
 }
