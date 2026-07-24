@@ -70,11 +70,11 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     src/test/java/com/epam/training/student_arkadii_ilinov/
     ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/        — Page Objects, one per application page, fluent navigation
-    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
+    ├── tests/        — BaseTest (driver lifecycle, failure screenshots via IHookable), CheckoutTest (UC-1, UC-2)
     └── utils/        — ConfigReader
 
     src/test/resources/
-    ├── config.properties  — base URL and credentials
+    ├── config.properties  — base URL, credentials, wait timeout, window size
     ├── testng.xml         — browsers and parallel execution settings
     ├── allure.properties  — results directory
     └── logback.xml        — logging config
@@ -95,7 +95,7 @@ parameter, and the blocks run in parallel (`parallel="tests"`).
 - **Factory** — `DriverFactory` builds a configured `WebDriver` for the requested `BrowserType`.
 - **Fluent Interface** — page methods return the next page, so a scenario reads as a chain of steps.
 - **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel Chrome/Firefox run safe.
-
+- **IHookable failure hook** — `BaseTest` wraps each test invocation to attach a screenshot while the Allure test case is still open and the driver is still alive. A listener won't do here: `ITestListener.onTestFailure` fires after allure-testng has already closed the test case.
 ---
 
 ## Logging
