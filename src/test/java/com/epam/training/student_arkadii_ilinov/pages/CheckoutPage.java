@@ -1,6 +1,5 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -14,7 +13,6 @@ public class CheckoutPage extends BasePage {
         super(driver);
     }
 
-    @Step("Fill checkout information: {firstName} {lastName}, {postalCode}")
     public CheckoutPage checkoutYourInformation(String firstName, String lastName, String postalCode) {
         clickable(FIRST_NAME_FIELD).sendKeys(firstName);
         clickable(LAST_NAME_FIELD).sendKeys(lastName);
@@ -22,7 +20,6 @@ public class CheckoutPage extends BasePage {
         return this;
     }
 
-    @Step("Continue to checkout overview")
     public CheckoutOverviewPage continueCheckout() {
         clickable(CONTINUE_BUTTON).click();
         return new CheckoutOverviewPage(driver);

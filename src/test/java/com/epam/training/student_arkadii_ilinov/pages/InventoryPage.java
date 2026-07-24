@@ -1,6 +1,5 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -16,7 +15,6 @@ public class InventoryPage extends BasePage {
         super(driver);
     }
 
-    @Step("Add item {itemName} to cart")
     public InventoryPage addItemToCart(String itemName) {
         clickable(addButtonLocator(itemName)).click();
         return this;
@@ -26,7 +24,6 @@ public class InventoryPage extends BasePage {
         return By.xpath(String.format(ADD_BUTTON_XPATH, itemName));
     }
 
-    @Step("Add items to cart: {itemNames}")
     public InventoryPage addItemsToCart(String... itemNames) {
         for (String itemName : itemNames) {
             addItemToCart(itemName);
@@ -34,7 +31,6 @@ public class InventoryPage extends BasePage {
         return this;
     }
 
-    @Step("Go to cart")
     public CartPage goToCart() {
         clickable(CART_LINK).click();
         return new CartPage(driver);

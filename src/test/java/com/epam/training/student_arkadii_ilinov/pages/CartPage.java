@@ -1,6 +1,5 @@
 package com.epam.training.student_arkadii_ilinov.pages;
 
-import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,17 +15,14 @@ public class CartPage extends BasePage {
         super(driver);
     }
 
-    @Step("Check that the cart contains {itemName}")
     public boolean isItemPresent(String itemName) {
         return getItemNames().contains(itemName);
     }
 
-    @Step("Check that the cart contains all of {itemNames}")
     public boolean areItemsPresent(String... itemNames) {
         return getItemNames().containsAll(Arrays.asList(itemNames));
     }
 
-    @Step("Proceed to checkout")
     public CheckoutPage goToCheckout() {
         clickable(CHECKOUT_BUTTON).click();
         return new CheckoutPage(driver);
