@@ -14,7 +14,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 public abstract class BasePage {
     protected final WebDriver driver;
     private final WebDriverWait wait;
-    private final static int TIMEOUT_WAIT_DURATION = ConfigReader.getTimeoutWaitDuration();
+    private final static int TIMEOUT_WAIT_DURATION = ConfigReader.getTimeoutWaitSeconds();
 
 
     protected BasePage(WebDriver driver) {

@@ -38,13 +38,13 @@ public class CheckoutSteps {
         testContext.setCartPage(cartPage);
     }
 
-    @Then("the cart contains {string} and {string}")
-    public void theCartContainsFirstItemAndSecondItem(String firstItemName, String secondItemName) {
+    @Then("the item {string} is present in the cart")
+    public void theCartContainsItem(String itemName) {
         CartPage cartPage = testContext.getCartPage();
-        boolean areItemPresent = cartPage.areItemsPresent(firstItemName, secondItemName);
-        assertTrue(areItemPresent,
-                String.format("Expected items '%s' and '%s' to be present in the cart, but they were not found.",
-                        firstItemName, secondItemName));
+        boolean isItemPresent = cartPage.isItemPresent(itemName);
+        assertTrue(isItemPresent,
+                String.format("Expected items '%s' to be present in the cart, but they were not found.",
+                        itemName));
     }
 
     @And("the user proceeds to the checkout overview")

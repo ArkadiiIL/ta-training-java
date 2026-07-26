@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class CartPage extends BasePage {
@@ -17,10 +16,6 @@ public class CartPage extends BasePage {
 
     public boolean isItemPresent(String itemName) {
         return getItemNames().contains(itemName);
-    }
-
-    public boolean areItemsPresent(String... itemNames) {
-        return getItemNames().containsAll(Arrays.asList(itemNames));
     }
 
     public CheckoutPage goToCheckout() {
