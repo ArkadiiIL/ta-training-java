@@ -24,13 +24,6 @@ public class InventoryPage extends BasePage {
         return By.xpath(String.format(ADD_BUTTON_XPATH, itemName));
     }
 
-    public InventoryPage addItemsToCart(String... itemNames) {
-        for (String itemName : itemNames) {
-            addItemToCart(itemName);
-        }
-        return this;
-    }
-
     public CartPage goToCart() {
         clickable(CART_LINK).click();
         return new CartPage(driver);
