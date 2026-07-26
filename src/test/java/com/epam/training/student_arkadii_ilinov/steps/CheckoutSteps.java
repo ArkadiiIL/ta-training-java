@@ -39,11 +39,11 @@ public class CheckoutSteps {
     }
 
     @Then("the item {string} is present in the cart")
-    public void theCartContainsItem(String itemName) {
+    public void theItemIsPresentInTheCart(String itemName) {
         CartPage cartPage = testContext.getCartPage();
         boolean isItemPresent = cartPage.isItemPresent(itemName);
         assertTrue(isItemPresent,
-                String.format("Expected items '%s' to be present in the cart, but they were not found.",
+                String.format("Expected item '%s' to be present in the cart, but they were not found.",
                         itemName));
     }
 
