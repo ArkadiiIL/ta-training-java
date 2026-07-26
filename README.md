@@ -1,7 +1,7 @@
 # SauceDemo Checkout Automation
 
 Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with
-Selenium WebDriver, JUnit 5, and the Page Object Model pattern.
+Selenium WebDriver, Cucumber, and the Page Object Model pattern.
 
 ---
 
@@ -46,9 +46,10 @@ Selenium WebDriver, JUnit 5, and the Page Object Model pattern.
 
 - Java 21
 - Selenium WebDriver 4.45
-- JUnit 5 — parameterized cross-browser execution & parallel test execution
+- Cucumber 7 — Gherkin scenarios, running on a TestNG runner
+- TestNG — cross-browser parallel execution
 - Maven
-- Allure Reports — steps, parameters, and screenshots on failure
+- Allure Reports — Gherkin steps and screenshots on failure
 - SLF4J + Logback
 
 Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the
@@ -69,68 +70,66 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
 ## Project Structure
 
     src/test/java/com/epam/training/student_arkadii_ilinov/
-    ├── driver/       — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
-    ├── pages/        — Page Objects, one per application page, fluent navigation
-    ├── tests/        — BaseTest (driver lifecycle), CheckoutTest (UC-1, UC-2)
-    ├── extensions/   — ScreenshotOnFailureExtension
-    └── utils/        — ConfigReader
+    ├── context/    — TestContext (shared scenario state, injected via picocontainer)
+    ├── driver/     — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
+    ├── pages/      — Page Objects, one per application page, fluent navigation
+    ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
+    └── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + screenshot)
 
     src/test/resources/
-    ├── config.properties          — base URL, test credentials, supported browsers list
-    ├── junit-platform.properties  — parallel execution settings
-    ├── allure.properties          — results directory
-    └── logback.xml                — logging config
+    ├── features/          — checkout.feature (UC-1, UC-2)
+    ├── config.properties  — base URL, test credentials
+    ├── testng.xml         — suite: one <test> block per browser, run in parallel
+    ├── allure.properties  — results directory
+    └── logback.xml        — logging config
 
 ---
 
 ## Design Patterns
 
-- **Page Object Model** — each page is a class, so tests read in terms of actions rather than selectors.
+- **BDD (Cucumber/Gherkin)** — scenarios read as Given/When/Then specifications; step definitions map them onto page
+  actions, so the feature files stay free of browser and selector detail.
+- **Page Object Model** — each page is a class, so steps read in terms of actions rather than selectors.
 - **Factory** — `DriverFactory` builds a configured `WebDriver` for the requested `BrowserType`.
 - **Fluent Interface** — page methods return the next page, so a scenario reads as a chain of steps.
+- **Dependency Injection** — picocontainer injects a shared `TestContext` into the step classes; a fresh graph per
+  scenario keeps it thread-safe under the parallel run.
 - **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel
   Chrome/Firefox run safe.
-- **Data-Driven Matrix (Stream/flatMap)** — dynamically combines available browsers with test datasets to generate
-  cross-browser test cases automatically.
 
 ---
 
 ## Logging
 
-SLF4J with Logback. The driver lifecycle and each test's start and finish are logged, with the thread name in the
-pattern so the parallel tests don't tangle in the output.
+SLF4J with Logback. The driver lifecycle and each scenario's start and finish are logged, with the thread name in the
+pattern so the parallel scenarios don't tangle in the output.
 
 ---
 
 ## How to Run
 
-Run the full test suite (UC-1 and UC-2, across both browsers, tests running in parallel):
+Run the full test suite (UC-1 and UC-2, across both browsers, in parallel):
 
 ```bash
 mvn test
 ```
 
-Run a single scenario (still executes across both browsers in parallel):
+Maven runs the suite defined in `testng.xml`, which has one `<test>` block per browser. To run just one browser, comment
+out the other block.
+
+Scenarios are tagged, so a subset can be run by tag:
 
 ```bash
 # UC-1 only
-mvn test -Dtest=CheckoutTest#checkoutSingleItemTest*
+mvn test "-Dcucumber.filter.tags=@uc1"
 ```
 
 ```bash
 # UC-2 only
-mvn test -Dtest=CheckoutTest#checkoutMultipleItemsTest*
+mvn test "-Dcucumber.filter.tags=@uc2"
 ```
 
-The set of browsers is read from `config.properties`. Edit the `browser` list to change which browsers run, or to run
-just one:
-
-    browser=chrome,firefox   # both, in parallel
-    browser=chrome           # Chrome only
-    browser=firefox          # Firefox only
-
-Tests run in parallel with a fixed pool of two threads, so two tests execute at once across the configured browser
-matrix.
+Each tagged scenario still executes across both browsers in parallel.
 
 ---
 
@@ -151,6 +150,5 @@ mvn allure:report
 
 It will be generated to `target/site/allure-maven-plugin/index.html`.
 
-Each test is structured as Given / When / Then steps, and the Behaviors tab groups the scenarios as an Epic → Feature →
-Story tree. Every test carries its browser and, for UC-2, the item prices as parameters; failed tests have a screenshot
-attached.
+The Behaviors tab groups the scenarios as a Feature → Scenario tree, each scenario showing its Given / When / Then
+steps; failed scenarios have a screenshot attached.
