@@ -1,9 +1,10 @@
+@allure.label.epic:SauceDemo_E2E
 Feature: Checkout
 
   Background:
     Given the user is logged in
 
-  @uc1
+  @uc1 @allure.label.severity:critical
   Scenario Outline: Checkout complete for a single item
     When the user adds "<item>" to the cart
     And the user goes to the cart
@@ -17,7 +18,7 @@ Feature: Checkout
       | Sauce Labs Backpack   |
       | Sauce Labs Bike Light |
 
-  @uc2
+  @uc2 @allure.label.severity:critical
   Scenario Outline: Checkout total equals the sum of prices for two items
     When the user adds "<firstItem>" to the cart
     And the user adds "<secondItem>" to the cart
