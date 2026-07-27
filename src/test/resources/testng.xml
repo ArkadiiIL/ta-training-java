@@ -4,13 +4,13 @@
     <test name="Chrome">
         <parameter name="browser" value="CHROME"/>
         <classes>
-            <class name="com.epam.training.student_arkadii_ilinov.tests.CheckoutTest"/>
+            <class name="com.epam.training.student_arkadii_ilinov.runners.CheckoutRunnerTest"/>
         </classes>
     </test>
     <test name="Firefox">
         <parameter name="browser" value="FIREFOX"/>
         <classes>
-            <class name="com.epam.training.student_arkadii_ilinov.tests.CheckoutTest"/>
+            <class name="com.epam.training.student_arkadii_ilinov.runners.CheckoutRunnerTest"/>
         </classes>
     </test>
 </suite>

@@ -24,6 +24,12 @@ public class DriverManager {
         }
         driver.remove();
     }
-    public static void setBrowser(BrowserType b) { browser.set(b); }
-    public static BrowserType getBrowser() { return browser.get(); }
+
+    public static void setBrowser(BrowserType browserType) {
+        browser.set(browserType);
+    }
+
+    public static BrowserType getBrowser() {
+        return browser.get();
+    }
 }

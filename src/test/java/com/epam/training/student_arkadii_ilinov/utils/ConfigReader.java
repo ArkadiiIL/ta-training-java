@@ -42,7 +42,7 @@ public class ConfigReader {
         return PROPERTIES.getProperty("window.height", "1080");
     }
 
-    public static int getTimeoutWaitDuration() {
-        return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds"));
+    public static int getTimeoutWaitSeconds() {
+        return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds", "10"));
     }
 }
