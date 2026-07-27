@@ -43,7 +43,7 @@ public class CheckoutSteps {
         CartPage cartPage = testContext.getCartPage();
         boolean isItemPresent = cartPage.isItemPresent(itemName);
         assertTrue(isItemPresent,
-                String.format("Expected item '%s' to be present in the cart, but they were not found.",
+                String.format("Expected item '%s' to be present in the cart, but it was not found.",
                         itemName));
     }
 
