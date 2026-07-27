@@ -6,7 +6,7 @@
 
     <groupId>com.epam.training.student_arkadii_ilinov</groupId>
     <artifactId>ta-training-java</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
