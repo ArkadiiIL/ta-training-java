@@ -45,4 +45,13 @@ public class ConfigReader {
     public static int getTimeoutWaitSeconds() {
         return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds", "10"));
     }
+    public static String getFirstName() {
+        return PROPERTIES.getProperty("checkout.firstName", "firstName");
+    }
+    public static String getLastName() {
+        return PROPERTIES.getProperty("checkout.lastName", "lastName");
+    }
+    public static String getZipCode() {
+        return PROPERTIES.getProperty("checkout.zipCode", "12345");
+    }
 }
