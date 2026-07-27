@@ -1,6 +1,7 @@
 package com.epam.training.student_arkadii_ilinov.steps;
 
 import com.epam.training.student_arkadii_ilinov.context.TestContext;
+import com.epam.training.student_arkadii_ilinov.data.CheckoutUser;
 import com.epam.training.student_arkadii_ilinov.pages.CartPage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutCompletePage;
 import com.epam.training.student_arkadii_ilinov.pages.CheckoutOverviewPage;
@@ -16,9 +17,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class CheckoutSteps {
-    private static final String FIRST_NAME = "FirstName";
-    private static final String LAST_NAME = "LastName";
-    private static final String ZIP_CODE = "12345";
+    private static final CheckoutUser CHECKOUT_USER = CheckoutUser.defaultUser();
     private final TestContext testContext;
 
     public CheckoutSteps(TestContext testContext) {
@@ -52,7 +51,7 @@ public class CheckoutSteps {
         CartPage cartPage = testContext.getCartPage();
         CheckoutOverviewPage checkoutOverviewPage = cartPage.
                 goToCheckout().
-                checkoutYourInformation(FIRST_NAME, LAST_NAME, ZIP_CODE)
+                checkoutYourInformation(CHECKOUT_USER.firstName(), CHECKOUT_USER.lastName(), CHECKOUT_USER.zipCode())
                 .continueCheckout();
         testContext.setCheckoutOverviewPage(checkoutOverviewPage);
     }

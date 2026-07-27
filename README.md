@@ -71,6 +71,7 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
 
     src/test/java/com/epam/training/student_arkadii_ilinov/
     ├── context/    — TestContext (shared scenario state, injected via picocontainer)
+    ├── data/       — CheckoutUser (immutable record with checkout form data, built from config)
     ├── driver/     — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/      — Page Objects, one per application page, fluent navigation
     ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
@@ -79,7 +80,7 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     src/test/resources/
     ├── features/          — checkout.feature (UC-1, UC-2)
     ├── allure/            — Allure metadata (environment.properties, copied into the results dir at build time)
-    ├── config.properties  — base URL, credentials, window size, wait timeout
+    ├── config.properties  — base URL, credentials, window size, wait timeout, checkout form data
     ├── testng.xml         — suite: one <test> block per browser, run in parallel
     ├── allure.properties  — results directory
     └── logback.xml        — logging config
@@ -97,6 +98,8 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
   scenario keeps it thread-safe under the parallel run.
 - **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel
   Chrome/Firefox run safe.
+- **Externalized test data** — checkout form data lives in `config.properties` and is read into an immutable
+  `CheckoutUser` record, keeping fixed data out of the step definitions.
 
 ---
 
