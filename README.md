@@ -1,7 +1,7 @@
 # SauceDemo Checkout Automation
 
 Automated test framework for the end-to-end checkout flow on [SauceDemo](https://www.saucedemo.com/), built with
-Selenium WebDriver, Cucumber, and the Page Object Model pattern.
+Selenium WebDriver, Cucumber on a TestNG runner, and the Page Object Model pattern.
 
 ---
 
@@ -49,7 +49,7 @@ Selenium WebDriver, Cucumber, and the Page Object Model pattern.
 - Cucumber 7 — Gherkin scenarios, running on a TestNG runner
 - TestNG — cross-browser parallel execution
 - Maven
-- Allure Reports — Gherkin steps and screenshots on failure
+- Allure Reports — Gherkin steps, plus screenshot, URL, and page source on failure
 - SLF4J + Logback
 
 Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the
@@ -74,11 +74,12 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     ├── driver/     — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/      — Page Objects, one per application page, fluent navigation
     ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
-    └── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + screenshot)
+    └── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + failure context capture)
 
     src/test/resources/
     ├── features/          — checkout.feature (UC-1, UC-2)
-    ├── config.properties  — base URL, test credentials
+    ├── allure/            — Allure metadata (environment.properties, copied into the results dir at build time)
+    ├── config.properties  — base URL, credentials, window size, wait timeout
     ├── testng.xml         — suite: one <test> block per browser, run in parallel
     ├── allure.properties  — results directory
     └── logback.xml        — logging config
@@ -150,5 +151,7 @@ mvn allure:report
 
 It will be generated to `target/site/allure-maven-plugin/index.html`.
 
-The Behaviors tab groups the scenarios as a Feature → Scenario tree, each scenario showing its Given / When / Then
-steps; failed scenarios have a screenshot attached.
+The Behaviors tab groups the scenarios as an Epic → Feature → Scenario tree, each scenario showing its Given / When /
+Then steps and tagged with a severity. The Overview page includes an Environment block (browsers, base URL, Selenium and
+Java versions), populated from `environment.properties`. Failed scenarios have the screenshot, the URL, and the page
+source attached.
