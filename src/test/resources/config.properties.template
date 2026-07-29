@@ -1,6 +1,6 @@
 base.url=https://www.saucedemo.com/
-username=standard_user
-password=secret_sauce
+username=REPLACE_ME
+password=REPLACE_ME
 window.width=1920
 window.height=1080
 wait.timeout.seconds=10
