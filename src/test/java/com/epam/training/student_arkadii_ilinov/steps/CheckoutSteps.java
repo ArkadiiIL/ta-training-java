@@ -46,7 +46,7 @@ public class CheckoutSteps {
                         itemName));
     }
 
-    @And("the user proceeds to the checkout overview")
+    @When("the user proceeds to the checkout overview")
     public void theUserProceedsToTheCheckoutOverview() {
         CartPage cartPage = testContext.getCartPage();
         CheckoutOverviewPage checkoutOverviewPage = cartPage.

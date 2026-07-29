@@ -9,7 +9,7 @@ Feature: Checkout
     When the user adds "<item>" to the cart
     And the user goes to the cart
     Then the item "<item>" is present in the cart
-    And the user proceeds to the checkout overview
+    When the user proceeds to the checkout overview
     And the user completes the checkout
     Then the order confirmation message "Thank you for your order!" is displayed
 
