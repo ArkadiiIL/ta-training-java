@@ -6,12 +6,17 @@ import java.util.Properties;
 
 public class ConfigReader {
     private static final String CONFIG_FILE = "config.properties";
+    private static final String MISSING_CONFIG_MESSAGE = """
+            %1$s not found on the classpath. \
+            Copy src/test/resources/%1$s.template to src/test/resources/%1$s \
+            and fill in the credentials (see README, Setup section)""";
     private static final Properties PROPERTIES = new Properties();
 
     static {
         try (InputStream input = ConfigReader.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
             if (input == null) {
-                throw new IllegalStateException(CONFIG_FILE + " not found on the classpath");
+                throw new IllegalStateException(MISSING_CONFIG_MESSAGE.formatted(CONFIG_FILE)
+                );
             }
             PROPERTIES.load(input);
         } catch (IOException e) {
@@ -45,12 +50,15 @@ public class ConfigReader {
     public static int getTimeoutWaitSeconds() {
         return Integer.parseInt(PROPERTIES.getProperty("wait.timeout.seconds", "10"));
     }
+
     public static String getFirstName() {
         return PROPERTIES.getProperty("checkout.firstName", "firstName");
     }
+
     public static String getLastName() {
         return PROPERTIES.getProperty("checkout.lastName", "lastName");
     }
+
     public static String getZipCode() {
         return PROPERTIES.getProperty("checkout.zipCode", "12345");
     }

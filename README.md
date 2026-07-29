@@ -63,7 +63,35 @@ Locators are CSS selectors throughout, with a single XPath for the add-to-cart b
 - Maven 3.9+
 - Chrome and Firefox installed locally
 
-Drivers are resolved automatically by Selenium Manager, so there's nothing else to set up.
+Drivers are resolved automatically by Selenium Manager, so there's nothing else to install.
+
+---
+
+## Setup
+
+The framework reads its configuration from `src/test/resources/config.properties`. That file is not tracked by Git, so
+create it from the committed template before the first run:
+
+```bash
+cp src/test/resources/config.properties.template src/test/resources/config.properties
+```
+
+On Windows `cmd.exe`:
+
+```bat
+copy src\test\resources\config.properties.template src\test\resources\config.properties
+```
+
+Then fill in `username` and `password`. SauceDemo publishes its demo accounts on the login page — these scenarios expect
+`standard_user` / `secret_sauce`. Every other key in the template already holds a working default, so nothing else needs
+editing.
+
+Credentials stay out of version control on purpose. The SauceDemo ones are public, but the project should carry the right
+pattern for the moment a real secret appears: at that point only the source of the values changes, not the structure. On
+CI the same template is copied at job start, with the values injected from the secret store.
+
+If `config.properties` is missing, the run fails immediately with an explicit message rather than failing later with a
+`NullPointerException`.
 
 ---
 
@@ -75,15 +103,17 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
     ├── driver/     — BrowserType, DriverFactory, DriverManager (ThreadLocal, one driver per thread)
     ├── pages/      — Page Objects, one per application page, fluent navigation
     ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
-    └── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + failure context capture)
+    ├── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + failure context capture)
+    └── utils/      — ConfigReader (loads config.properties from the classpath, fails fast when it is absent)
 
     src/test/resources/
-    ├── features/          — checkout.feature (UC-1, UC-2)
-    ├── allure/            — Allure metadata (environment.properties, copied into the results dir at build time)
-    ├── config.properties  — base URL, credentials, window size, wait timeout, checkout form data
-    ├── testng.xml         — suite: one <test> block per browser, run in parallel
-    ├── allure.properties  — results directory
-    └── logback.xml        — logging config
+    ├── features/                   — checkout.feature (UC-1, UC-2)
+    ├── allure/                     — Allure metadata (environment.properties, copied into the results dir at build time)
+    ├── config.properties.template  — committed template; copy it to config.properties before the first run
+    ├── config.properties           — local and git-ignored: base URL, credentials, window size, wait timeout, checkout form data
+    ├── testng.xml                  — suite: one <test> block per browser, run in parallel
+    ├── allure.properties           — results directory
+    └── logback.xml                 — logging config
 
 ---
 
@@ -98,8 +128,9 @@ Drivers are resolved automatically by Selenium Manager, so there's nothing else 
   scenario keeps it thread-safe under the parallel run.
 - **ThreadLocal driver storage** — `DriverManager` keeps one driver per thread, which is what makes the parallel
   Chrome/Firefox run safe.
-- **Externalized test data** — checkout form data lives in `config.properties` and is read into an immutable
-  `CheckoutUser` record, keeping fixed data out of the step definitions.
+- **Externalized configuration** — credentials, window size, timeout and checkout form data live in `config.properties`
+  and are read through `ConfigReader`; the checkout data becomes an immutable `CheckoutUser` record, keeping fixed data
+  out of the step definitions.
 
 ---
 
@@ -111,6 +142,8 @@ pattern so the parallel scenarios don't tangle in the output.
 ---
 
 ## How to Run
+
+Complete the [Setup](#setup) step first — without `config.properties` the suite stops before the first scenario.
 
 Run the full test suite (UC-1 and UC-2, across both browsers, in parallel):
 
