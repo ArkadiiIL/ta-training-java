@@ -19,10 +19,14 @@ public class DriverManager {
 
     public static void quitDriver() {
         WebDriver webDriver = driver.get();
-        if (webDriver != null) {
-            webDriver.quit();
+        try {
+            if (webDriver != null) {
+                webDriver.quit();
+            }
+        } finally {
+            browser.remove();
+            driver.remove();
         }
-        driver.remove();
     }
 
     public static void setBrowser(BrowserType browserType) {
