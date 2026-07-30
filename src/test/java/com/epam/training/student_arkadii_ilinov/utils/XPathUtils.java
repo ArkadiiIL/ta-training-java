@@ -1,6 +1,6 @@
 package com.epam.training.student_arkadii_ilinov.utils;
 
-public class XPathUtils {
+public final class XPathUtils {
     private XPathUtils() {
     }
 

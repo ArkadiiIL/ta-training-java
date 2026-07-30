@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ConfigReader {
+public final class ConfigReader {
     private static final String CONFIG_FILE = "config.properties";
     private static final String MISSING_CONFIG_MESSAGE = """
             %1$s not found on the classpath. \
