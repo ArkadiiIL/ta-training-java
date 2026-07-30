@@ -71,7 +71,6 @@ public class CheckoutSteps {
                 "The sum of item prices does not match the total shown on the overview page.");
     }
 
-
     @And("the user completes the checkout")
     public void theUserCompletesTheCheckout() {
         CheckoutOverviewPage checkoutOverviewPage = testContext.getCheckoutOverviewPage();
