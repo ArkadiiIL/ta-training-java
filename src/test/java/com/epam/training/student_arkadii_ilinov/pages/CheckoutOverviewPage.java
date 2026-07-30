@@ -6,6 +6,8 @@ import org.openqa.selenium.WebDriver;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.epam.training.student_arkadii_ilinov.utils.PriceUtils.parseAmount;
+
 public class CheckoutOverviewPage extends BasePage {
     private final static By FINISH_BUTTON = By.cssSelector("button[data-test='finish']");
     private final static By PRICE_ITEMS = By.cssSelector("div[data-test='inventory-item-price']");
@@ -23,15 +25,11 @@ public class CheckoutOverviewPage extends BasePage {
     public List<BigDecimal> getItemsPrices() {
         return allVisible(PRICE_ITEMS)
                 .stream()
-                .map(webElement -> webElement.getText().replace("$", "").strip())
-                .map(BigDecimal::new)
+                .map(webElement -> parseAmount(webElement.getText()))
                 .toList();
     }
 
     public BigDecimal getItemTotalPrice() {
-        String itemTotalPriceText =
-                visible(ITEM_TOTAL_PRICE)
-                        .getText().replace("Item total: $", "").strip();
-        return new BigDecimal(itemTotalPriceText);
+        return parseAmount(visible(ITEM_TOTAL_PRICE).getText());
     }
 }
