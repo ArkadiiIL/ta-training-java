@@ -105,7 +105,8 @@ If `config.properties` is missing, the run fails immediately with an explicit me
     ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
     ├── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + failure context capture)
     └── utils/      — ConfigReader (loads config.properties from the classpath, fails fast when it is absent),
-                       XPathUtils (builds safe XPath 1.0 string literals for values containing quotes)
+                       XPathUtils (builds safe XPath 1.0 string literals for values containing quotes),
+                       PriceUtils (extracts a numeric amount from a price label via regex)
 
     src/test/resources/
     ├── features/                   — checkout.feature (UC-1, UC-2)
@@ -136,6 +137,10 @@ If `config.properties` is missing, the run fails immediately with an explicit me
     between single and double quotes, or falling back to `concat()` when a value contains both — XPath 1.0 has no
     backslash-escaping, so this is the only correct way to handle an item name with an apostrophe. Used by
     `InventoryPage` when locating the add-to-cart button by product name.
+- **Robust price parsing** — `PriceUtils.parseAmount()` extracts the numeric amount from a price label with a
+  regular expression instead of stripping a fixed prefix, so a label wording or layout change fails with a clear
+  message instead of a `NumberFormatException`. Used by `CheckoutOverviewPage` for both the per-item prices and
+  the item total.
 
 ---
 
