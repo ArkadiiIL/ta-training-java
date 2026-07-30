@@ -3,9 +3,11 @@ package com.epam.training.student_arkadii_ilinov.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import static com.epam.training.student_arkadii_ilinov.utils.XPathUtils.xpathLiteral;
+
 public class InventoryPage extends BasePage {
     private final static String ADD_BUTTON_XPATH = """
-            //div[@data-test='inventory-item-name' and text()='%s']\
+            //div[@data-test='inventory-item-name' and text()=%s]\
             /ancestor::div[@data-test='inventory-item']\
             //button[starts-with(@data-test, 'add-to-cart')]""";
 
@@ -21,7 +23,7 @@ public class InventoryPage extends BasePage {
     }
 
     private By addButtonLocator(String itemName) {
-        return By.xpath(String.format(ADD_BUTTON_XPATH, itemName));
+        return By.xpath(String.format(ADD_BUTTON_XPATH, xpathLiteral(itemName)));
     }
 
     public CartPage goToCart() {

@@ -53,7 +53,7 @@ Selenium WebDriver, Cucumber on a TestNG runner, and the Page Object Model patte
 - Allure Reports — Gherkin steps, plus screenshot, URL, and page source on failure
 - SLF4J + Logback
 
-Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the product name.
+Locators are CSS selectors throughout, with a single XPath for the add-to-cart button, whose position depends on the product name; the item name is safely escaped via XPathUtils before being inserted into the XPath predicate.
 
 ---
 
@@ -104,7 +104,8 @@ If `config.properties` is missing, the run fails immediately with an explicit me
     ├── pages/      — Page Objects, one per application page, fluent navigation
     ├── runners/    — CheckoutRunnerTest (AbstractTestNGCucumberTests, sets the browser per thread)
     ├── steps/      — LoginSteps, CheckoutSteps (step definitions), Hooks (driver lifecycle + failure context capture)
-    └── utils/      — ConfigReader (loads config.properties from the classpath, fails fast when it is absent)
+    └── utils/      — ConfigReader (loads config.properties from the classpath, fails fast when it is absent),
+                       XPathUtils (builds safe XPath 1.0 string literals for values containing quotes)
 
     src/test/resources/
     ├── features/                   — checkout.feature (UC-1, UC-2)
@@ -131,6 +132,10 @@ If `config.properties` is missing, the run fails immediately with an explicit me
 - **Externalized configuration** — credentials, window size, timeout and checkout form data live in `config.properties`
   and are read through `ConfigReader`; the checkout data becomes an immutable `CheckoutUser` record, keeping fixed data
   out of the step definitions.
+- **Safe XPath literals** — `XPathUtils.xpathLiteral()` wraps a value for use inside an XPath predicate, switching
+    between single and double quotes, or falling back to `concat()` when a value contains both — XPath 1.0 has no
+    backslash-escaping, so this is the only correct way to handle an item name with an apostrophe. Used by
+    `InventoryPage` when locating the add-to-cart button by product name.
 
 ---
 
